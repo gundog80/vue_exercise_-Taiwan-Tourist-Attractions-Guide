@@ -1,0 +1,6 @@
+.twicon-main-island:before {
+    content: "\a002";
+  }
+.container{
+  max-width: 1024px;
+}

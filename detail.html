@@ -4,21 +4,92 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.2/vue.global.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/all.css">
+    <link rel="stylesheet" href="./img/twicon/twicon.css">
+
+    
+
     <title>The Taiwan</title>
 </head>
-<body id="App">
-    <header>
-        <h1></h1>
-        <div>THE taiwan</div>
-        <search_bar></search_bar>
-    </header>
+<body ><div id="App" >
+    <header class="container"><div class="row">
+        <h1 class="hide">{{}}</h1>
+        <div class="col-3">THE <i class="twicon-main-island"></i></div>
+        <!-- <search_bar></search_bar> -->
+        <form class="d-flex sharebar col-auto mx-auto justify-content-center">
+            <div class="select form-floating" v-for="(item, index) in search_bar.selection">
+                <select  class="form-select form-select-sm"  aria-label="Floating label select example" 
+                    :id="item.name" :value=item.data[0]>
+                        <option v-for="(item, index) in item.data" :value="item">{{item}}</option>
+                    </select>
+                <label :for="item.name">{{item.name}}</label>
+            </div>
+                <!-- 按鈕選單(不支援form的自動反應,但後續可改) -->
+                <!-- <div class="dropdown" id="tryinput">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                      Dropdown button
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </div> -->
+            
+            
+
+        </form>
+    </div></header>
     <main>
         <!-- <card type="" @data=""></card> -->
+        <section class="comtainer"  >
+            <img class="col-7"
+                :src="spot_data.Picture.PictureUrl1" :alt="spot_data.ScenicSpotName">
+            <div>
+                <header>
+                    <h3>{{spot_data.ScenicSpotName}}</h3>
+                    <div><span class="area"><i>i</i>{{spot_data.area}}</span></div>
+                </header>
+                <ul>
+                    <li>開放時間 {{spot_data.OpenTime}}</li>
+                    <li>票價資訊 {{spot_data.TicketInfo}}</li>
+                    <li>聯絡電話 {{spot_data.Phone}}</li>
+                    <li>景點地址 {{spot_data.Address}}</li>
+                    <li>官方網站 </li>
+                </ul>
 
+            </div>
+        </section>
+        <section>
+            <ul>
+                <li>
+                    <div class="左方偽元素">景點介紹</div>
+                    <div><p>{{spot_data.DescriptionDetail}}</p></div>
+                </li>
+                <li>
+                    <div class="左方偽元素">地圖</div>
+                    <div>
+                        <map name=""></map>
+                        <div>
+                            <div>交通資訊</div>
+                            <p>{{spot_data.TravelInfo}}</p>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="左方偽元素">注意事項</div>
+                    <div><p>{{spot_data.Remarks}}</p></div>
+                </li>
+            </ul>
+            <aside></aside>
+        </section>
     </main>
     <aside></aside>
     <footer></footer>
     
-</body>
+</div></body>
 <script src="./detail.js"></script>
 </html>
