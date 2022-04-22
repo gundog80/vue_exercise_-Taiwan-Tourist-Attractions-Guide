@@ -19,28 +19,78 @@ const App=Vue.createApp({
                 "UpdateTime":"2022-03-31T02:34:30+08:00",
                 "area":"台南市",
             },
-            search_bar:{
-                selection:{
-                    地區:{name:"地區",data:["台北","新北","新竹"]},
-                    類別:{name:"類別",data:["活動","景點","住宿"]},
-                },
-            }
+            // search_bar:{
+            //     selection:{
+            //         地區:{name:"地區",data:["台北","新北","新竹"],value:""},
+            //         類別:{name:"類別",data:["活動","景點","住宿"],value:""},
+            //     },
+            //     searchText: "",
+            //     // data
+            // },
         }
     },
     methods:{
+        get_search:function(e){
+            console.log('父項：');
+            console.log(e);
+        },
 
     },
     created(){
-        console.log("hi")
+        console.log("hi created")
     }
 });
 App.component('search_bar',{
     props:['type'],
-    methods:{
-        c_search(e){
-          console.log("search: "+e);
-          this.$emit('emit_e',e);
+    data(){
+        return{
+            search_bar:{
+                selection:{
+                    地區:{name:"地區",data:["台北","新北","新竹"],value:""},
+                    類別:{name:"類別",data:["活動","景點","住宿"],value:""},
+                },
+                searchText: "",
+                // data
+            },
         }
-    }
+    },
+    methods:{
+        send_search:function(){
+            let temp= Object.values(this.search_bar.selection);
+            let OPut={};
+            temp.forEach(item=>{
+                console.log(item);
+                OPut[item.name]=item.value;
+            });
+            OPut.searchText=this.search_bar.searchText;
+            console.log('子項資訊：');
+            console.log(OPut);
+            this.$emit('emit_e',OPut);
+        },
+        c_get_search(e){
+          console.log("事件: "+e);
+          this.$emit('emit_e',Oput);
+        }
+    },
+    template:`
+    <form class="d-flex sharebar col-auto mx-auto justify-content-center ">
+        <div class="select form-floating" v-for="(item, index) in search_bar.selection">
+            <select  class="form-select form-select-sm"  aria-label="Floating label select example" 
+                :id="item.name" :value=item.data[0] v-model="item.value">
+                    <option v-for="(item, index) in item.data" :value="item">{{item}}</option>
+                </select>
+            <label :for="item.name">{{item.name}}</label>
+        </div>
+        <div class="form-floating">
+            <input class="form-control" placeholder="Leave a comment here" id="searchTextarea"
+                v-model.trim="search_bar.searchText"
+            > 
+            <label for="searchTextarea">請輸入搜尋內容</label>
+        </div>
+        <btn type="button" class="btn btn-info rounded-none rounded-end d-flex align-items-center"
+            @click="send_search">搜尋
+        </btn>
+    </form>
+    `,
 })
 App.mount('#App');

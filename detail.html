@@ -18,30 +18,25 @@
     <header class="container"><div class="row">
         <h1 class="hide">{{}}</h1>
         <div class="col-3">THE <i class="twicon-main-island"></i></div>
-        <!-- <search_bar></search_bar> -->
-        <form class="d-flex sharebar col-auto mx-auto justify-content-center">
+        <search_bar @emit_e="get_search"></search_bar>
+        <!-- <form class="d-flex sharebar col-auto mx-auto justify-content-center ">
             <div class="select form-floating" v-for="(item, index) in search_bar.selection">
                 <select  class="form-select form-select-sm"  aria-label="Floating label select example" 
-                    :id="item.name" :value=item.data[0]>
+                    :id="item.name" :value=item.data[0] v-model="item.value">
                         <option v-for="(item, index) in item.data" :value="item">{{item}}</option>
                     </select>
                 <label :for="item.name">{{item.name}}</label>
             </div>
-                <!-- 按鈕選單(不支援form的自動反應,但後續可改) -->
-                <!-- <div class="dropdown" id="tryinput">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                      Dropdown button
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </div> -->
-            
-            
-
-        </form>
+            <div class="form-floating">
+                <input class="form-control" placeholder="Leave a comment here" id="searchTextarea"
+                    v-model.trim="search_bar.searchText"
+                > </input>
+                <label for="searchTextarea">請輸入搜尋內容</label>
+            </div>
+            <btn type="button" class="btn btn-info rounded-none rounded-end d-flex align-items-center"
+                @click="send_search">搜尋
+            </button>
+        </form> -->
     </div></header>
     <main>
         <!-- <card type="" @data=""></card> -->
