@@ -37,7 +37,23 @@ const App=Vue.createApp({
 
     },
     created(){
-        console.log("hi created")
+        console.log("hi created");
+    },
+    mounted(){
+        const map = L.map("Map", {
+            center: [this.spot_data.Position.PositionLat, this.spot_data.Position.PositionLon],
+            zoom: 14
+          });
+          // 載入圖資
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>         contributors'
+          }).addTo(map);
+          // 彈出視窗
+          L.marker([this.spot_data.Position.PositionLat, this.spot_data.Position.PositionLon])
+            .addTo(map)
+            .bindPopup(this.spot_data.ScenicSpotName)
+            .openPopup();
+        
     }
 });
 App.component('search_bar',{

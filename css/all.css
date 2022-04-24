@@ -10,3 +10,34 @@
        -moz-border-radius: 0;
        border-radius: 0;
   }
+h3
+{
+    font-size: 2em ;
+  }
+h4{
+  border-left: .5em rgb(0, 217, 255) solid;
+  border-style:solid;
+}
+.end-hide-parent{
+  position:relative;
+}
+.end-hide{
+  max-height: 5em;
+  overflow: hidden;
+}
+.end-hide::before{
+  display: block;
+  content:"";
+  width:100%;
+  min-height: 30%;
+  position: absolute;
+  bottom: 1em;
+  background-image: linear-gradient( #fff2,#ffff);
+  z-index: 10;
+}
+.no-decoration,.no-decoration:hover{
+  text-decoration:none;
+}
+#Map{
+  height:250px;
+}
