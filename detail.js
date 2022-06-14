@@ -30,9 +30,45 @@ const App=Vue.createApp({
         }
     },
     methods:{
-        get_search:function(e){
+        get_url(e){
+            let toEng={
+                活動:"Activity",
+                景點:"ScenicSpot",
+                住宿:"Hotel",
+                餐飲:"Restaurant",
+                台北:"Taipei",
+                新北:"NewTaipei",
+                新竹:"Hsinchu",
+            };
+            let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/",
+                subTarget="?%24top=30&%24format=JSON",
+                serachType="",city="";
+            Object.entries(e).forEach((item)=>{
+                let [k,v]=item;
+                switch(k){
+                    case "類別" :
+                        serachType=toEng[v];
+                        break;
+                    case "地區" :
+                        city=toEng[v];
+                        break;
+                    default:
+                        subTarget += "%24" + k + "=" + v;
+                };
+            });
+        let url=baseTarget + serachType + '/' + city + '/' + subTarget + '%47';
+        return url;
+        },
+        // get_search:function(e){
+        get_search(e){
             console.log('父項：');
             console.log(e);
+            
+            let url=this.get_url(e);
+            // let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/Kaohsiung?%24top=30&%24format=JSON";
+            console.log('url=' + url);
+
+
         },
 
     },
@@ -57,7 +93,7 @@ const App=Vue.createApp({
     }
 });
 App.component('search_bar',{
-    props:['type'],
+    // props:['type'],
     data(){
         return{
             search_bar:{
@@ -75,18 +111,19 @@ App.component('search_bar',{
             let temp= Object.values(this.search_bar.selection);
             let OPut={};
             temp.forEach(item=>{
+                console.log("item=");
                 console.log(item);
                 OPut[item.name]=item.value;
             });
             OPut.searchText=this.search_bar.searchText;
-            console.log('子項資訊：');
-            console.log(OPut);
+            // console.log('子項資訊：');
+            // console.log(OPut);
             this.$emit('emit_e',OPut);
         },
-        c_get_search(e){
-          console.log("事件: "+e);
-          this.$emit('emit_e',Oput);
-        }
+        // c_get_search(e){
+        //   console.log("事件: "+e);
+        //   this.$emit('emit_e',Oput);
+        // }
     },
     template:`
     <form class="d-flex sharebar col-auto mx-auto justify-content-center ">
