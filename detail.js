@@ -30,6 +30,7 @@ const App=Vue.createApp({
         }
     },
     methods:{
+        get_url_searchBar(e){
             let toEng={
                 活動:"Activity",
                 景點:"ScenicSpot",
@@ -40,7 +41,8 @@ const App=Vue.createApp({
                 新竹:"Hsinchu",
             };
             let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/",
-                subTarget="?%24top=30&%24format=JSON",
+                subTarget="?%24format=JSON",
+                // subTarget="?%24top=30&%24format=JSON",
                 serachType="",city="";
             Object.entries(e).forEach((item)=>{
                 let [k,v]=item;
@@ -51,24 +53,49 @@ const App=Vue.createApp({
                     case "地區" :
                         city=toEng[v];
                         break;
+                    case "searchText" :
+                        if(v==''){
+                            break;
+                        };
                     default:
-                        subTarget += "%24" + k + "=" + v;
+                        subTarget += "&%24" + k + "=" + v;
                 };
             });
-        let url=baseTarget + serachType + '/' + city + '/' + subTarget + '%47';
+        let url=baseTarget + serachType + '/' + city +  subTarget;
         return url;
         },
         // get_search:function(e){
         get_search(e){
+            if(!e.searchType){
+                e.searchType='searchBar';
+            };
+            if(!e.page){
+                e.page=1;
+            };
+            // console.log(e);
             console.log('父項：');
             console.log(e);
-            
-            let url=this.get_url(e);
+            let searchType=e.searchType,
+            pageQ=10, url;
+            e.top=pageQ;
+            e.skip=pageQ*(e.page-1);
+            delete e.searchType;          
+            delete e.page; 
+            console.log(e);
+            switch(searchType){
+                case 'searchBar':
+                    url=this.get_url_searchBar(e);
+                    break;
+                default:
+                    console.log('searchType error');
+                    break;
+            };
             // let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/Kaohsiung?%24top=30&%24format=JSON";
-            console.log('url=' + url);
+            // console.log('url=' + url);
 
 
         },
+
 
     },
     created(){
