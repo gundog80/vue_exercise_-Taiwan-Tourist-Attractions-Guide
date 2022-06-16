@@ -30,7 +30,6 @@ const App=Vue.createApp({
         }
     },
     methods:{
-        get_url(e){
             let toEng={
                 活動:"Activity",
                 景點:"ScenicSpot",
