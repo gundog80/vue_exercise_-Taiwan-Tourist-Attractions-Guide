@@ -95,8 +95,21 @@ const App=Vue.createApp({
 
 
         },
-
-
+        get_target_ID(){
+            var url = location.href;
+            if(url.indexOf('?')!=-1){
+                this.urlAry = url.split('?')[1].split('&');
+                for(i=0;i<=this.urlAry.length-1;i++){
+                    if(this.urlAry[i].split('=')[0] == 'kind'){
+                    this.target_kind = this.urlAry[i].split('=')[1];};
+                    if(this.urlAry[i].split('=')[0] == 'ID'){
+                    this.target_ID = this.urlAry[i].split('=')[1];};
+                } 
+            }
+        },
+        search_Target(){
+            
+        }
     },
     created(){
         console.log("hi created");
@@ -117,6 +130,7 @@ const App=Vue.createApp({
             .openPopup();
         
     }
+    
 });
 App.component('search_bar',{
     // props:['type'],
