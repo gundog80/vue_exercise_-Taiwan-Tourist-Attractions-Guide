@@ -45,7 +45,7 @@
                 :src="spot_data.Picture.PictureUrl1" :alt="spot_data.ScenicSpotName">
             <div class="col-md-5">
                 <header class="mb-5">
-                    <h3><b>{{spot_data.ScenicSpotName}}</b></h3>
+                    <h3><b>{{spot_data.ScenicSpotName}}{{spot_data.HotelName}}</b></h3>
                     <div><span class="area fw-bolder text-info"><i class="bi bi-geo-alt  m-2  d-inline-block"></i> {{spot_data.area}}</span></div>
                 </header>
                 <ul class="m-3">
@@ -53,6 +53,7 @@
                     <li><span class="fw-bolder col-3 d-inline-block m-1">票價資訊</span>    {{spot_data.TicketInfo}}</li>
                     <li><span class="fw-bolder col-3 d-inline-block m-1">聯絡電話</span>    {{spot_data.Phone}}</li>
                     <li><span class="fw-bolder col-3 d-inline-block m-1">景點地址</span>    {{spot_data.Address}}</li>
+                    <li><span class="fw-bolder col-3 d-inline-block m-1">{{trychange[0]}}</span>    {{trychange[1]}}</li>
                     <li><span class="fw-bolder col-3 d-inline-block m-1">官方網站</span>    </li>
                 </ul>
             </div>
