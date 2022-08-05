@@ -1,13 +1,28 @@
 const App=Vue.createApp({
     data(){
         return{
+            detail_open:false,
             h1:'test',
+            detail_type:"ScenicSpot",
+            list_menu:{
+                "ScenicSpot":{
+                    'OpenTime':['開放時間','OpenTime'],
+                    'TickerInfo':['票價資訊','TickerInfo'],
+                    'Phone':['聯絡電話','Phone'],
+                    'Address':['景點地址','Address'],
+                    'WebsiteUrl':['官方網站','WebsiteUrl'],
+                    },
+                "Restaurant":{},
+                "Hotel":{},
+                "Activity":{},
+            },
             spot_data:{"ScenicSpotID":"C1_315080500H_000068",
                 "ScenicSpotName":"紫坪",
                 "DescriptionDetail":"紫坪位在綠島最南方，緊鄰「綠島露營區」。從露營區旁的步道，可通往海岸邊的潟湖「紫坪」。「紫坪」是一處由珊瑚礁構成的潮池，也是綠島著名的潟湖所在地，有全綠島最完整的潟湖地形以及珊瑚礁植群，更有茂盛的植物水芫花和珍貴的陸寄居蟹。外海儘管浪濤洶湧，內湖依然波平如鏡，宛若沉睡的湖水，清淺的躺在外珊瑚礁岩與內珊瑚貝砂灘間；水芫花灌叢身影倒映於平靜無波的水面上，潔白柔細的白砂鋪陳水底。熱帶海岸旖旎風情，盡在不言中。",
                 "Description":"紫坪位在綠島最南方，從附近的步道，可通往海岸邊的潟湖。此處是由珊瑚礁構成的潮池，也是綠島著名的潟湖所在地，有全綠島最完整的潟湖地形以及珊瑚礁植群，更有茂盛的植物水芫花和珍貴的陸寄居蟹。",
                 "Phone":"886-8-9672026",
-                "Address":"臺東縣951綠島鄉溫泉路256號","ZipCode":"951",
+                "Address":"臺東縣951綠島鄉溫泉路256號",
+                "ZipCode":"951",
                 "TravelInfo":"南下：於花蓮火車站前搭乘花蓮客運，往豐濱、靜浦，或是台東方向班車，在富岡漁港站下車後步行至富岡漁港，轉乘渡船前往綠島。北上：自台東火車站前搭乘台灣好行東部海岸線或鼎東客運海線班車，在富岡漁港站下車後步行至富岡漁港，轉乘渡船前往綠島。綠島：島上設有環島公車，搭乘公車至朝日溫泉下車，往前步行約5分鐘(查詢電話：089-672510)。。",
                 "OpenTime":"全天候開放",
                 "Picture":{"PictureUrl1":"https://www.eastcoast-nsa.gov.tw/image/426/640x480",
@@ -112,15 +127,19 @@ const App=Vue.createApp({
                         switch(reAry[0]){
                             case 'scenicspot':
                                 reAry.push('ScenicSpotID');
-                                break;
+                                this.detail_type='ScenicSpot';
+                            break;
                             case 'restaurant':
                                 reAry.push('RestaurantID');
+                                this.detail_type='Restaurant';
                                 break;
                             case 'hotel':
                                 reAry.push('HotelID');
+                                this.detail_type='Hotel';
                                 break;
                             case 'activity':
                                 reAry.push('ActivityID');
+                                this.detail_type='Activity';
                                 break;
                             default:
                                 console.log('請洽維護人員')
@@ -156,45 +175,67 @@ const App=Vue.createApp({
         },
         search_Target(){
             
+        },
+        openDetail(){
+            let e = document.getElementById('detail');
+            this.detail_open=!this.detail_open;
+            if(this.detail_open){
+                e.setAttribute('class','')
+            }else{
+                e.setAttribute('class','end-hide')
+                
+            }
+        },
+        // show_map(map){
+        //     
+
+        // },
+        creat_map(aa){
+
+            console.log(aa);
+            const map = L.map("Map", {
+                center: [aa.PositionLat, aa.PositionLon],
+                zoom: 14
+              });
+          // 載入圖資
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>         contributors'
+          }).addTo(map);
+          // 設定標籤
+          L.marker([aa.PositionLat, aa.PositionLon])
+          .addTo(map)
+          .bindPopup(this.spot_data.ScenicSpotName+this.spot_data.HotelName+this.spot_data.RestaurantName+this.spot_data.ActivityName)
+          .openPopup();
         }
     },
     created(){
-        console.log("hi created");
+        // console.log("hi created");
         let url=this.get_pageTarget_url();
         axios.get(url).
         then(response=>{
             console.log(response)
             this.spot_data=this.jsonData = response.data[0];
-
-            console.log(this.jsonData)
+            return this.jsonData;
+        }).
+        then(response=>{
+            if(!response.City){
+                this.spot_data.City=this.spot_data.Address.substr(0,3);
+            };
+            return response.Position;
+        }).
+        then(response=>{
+            console.log(response);
+            this.creat_map(response);
         });
-        // console.log(url);
-        
-        // axios
-        // .get(jsonUrl)
-        // .then(response => {
-        // this.jsonData = response.data.result.records;
+
     },
     watch:{
         spot_data(){
-            this.trychange[1]=this.spot_data.Address;
+  
         },
     },
     mounted(){
-        // this.trychange[1]=this.spot_data.Address;
-        const map = L.map("Map", {
-            center: [this.spot_data.Position.PositionLat, this.spot_data.Position.PositionLon],
-            zoom: 14
-          });
-          // 載入圖資
-          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>         contributors'
-          }).addTo(map);
-          // 彈出視窗
-          L.marker([this.spot_data.Position.PositionLat, this.spot_data.Position.PositionLon])
-            .addTo(map)
-            .bindPopup(this.spot_data.ScenicSpotName)
-            .openPopup();
+
         
     }
     
