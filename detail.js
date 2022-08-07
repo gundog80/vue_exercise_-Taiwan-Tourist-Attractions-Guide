@@ -4,6 +4,7 @@ const App=Vue.createApp({
             detail_open:false,
             h1:'test',
             detail_type:"ScenicSpot",
+            picture_array:[],
             list_menu:{
                 "ScenicSpot":{
                     'OpenTime':['開放時間','OpenTime'],
@@ -13,7 +14,13 @@ const App=Vue.createApp({
                     'WebsiteUrl':['官方網站','WebsiteUrl'],
                     },
                 "Restaurant":{},
-                "Hotel":{},
+                "Hotel":{
+                    'OpenTime':['開放時間','OpenTime'],
+                    'TickerInfo':['票價資訊','TickerInfo'],
+                    'Phone':['聯絡電話','Phone'],
+                    'Address':['景點地址','Address'],
+                    'WebsiteUrl':['官方網站','WebsiteUrl'],
+                },
                 "Activity":{},
             },
             spot_data:{"ScenicSpotID":"C1_315080500H_000068",
@@ -224,9 +231,27 @@ const App=Vue.createApp({
             return response.Position;
         }).
         then(response=>{
-            console.log(response);
+            // console.log(response);
             this.creat_map(response);
+            return 0;
+        }).
+        then(response=>{
+            this.picture_array=[];
+            let n=2,temp= Object.entries(this.spot_data.Picture);
+            temp.forEach((item,index) =>{
+                // console.log('item=' + item);
+                // console.log('item=' + item[0].substr(0,10));
+                if(item[0].substr(0,10)=='PictureUrl'){
+                    item.push(n);
+                    this.picture_array.push(item);
+                    n++;
+                };
+                // console.log(this.picture_array);
+            } ) 
+            // this.spot_data.Picture
+            // console.log('圖片'+this.spot_data.Picture);
         });
+
 
     },
     watch:{
