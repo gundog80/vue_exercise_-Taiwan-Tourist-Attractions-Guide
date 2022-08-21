@@ -42,7 +42,16 @@ const App=Vue.createApp({
                 "UpdateTime":"2022-03-31T02:34:30+08:00",
                 "area":"台南市",
             },
-            trychange:['測試',0],
+            aside_ad1:[{
+                title:"ad title",
+                data:{
+                    'name':'ppp',
+                    'class1':'aaa',
+                    'Picture':{PictureUrl1:"https://taiwan.taiwanstay.net.tw/twpic/15545.jpg"},
+                    'city':"新北市"
+                },
+            }],
+            // trychange:['測試',0],
             // search_bar:{
                 //     selection:{
             //         地區:{name:"地區",data:["台北","新北","新竹"],value:""},
