@@ -43,7 +43,6 @@
     <section class="container"  >
         <div class="row">
             <div class="col-md-7">
-                {{picture_array}}
                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                     <!-- {{picture_array}} -->
                     <div class="carousel-indicators">
@@ -60,16 +59,21 @@
                     </div>
                     <div class="carousel-inner">
                         <template v-for="(item,key) in picture_array">
-                            <div class="carousel-item active" 
+                            <div class="carousel-item active " 
                               v-if="key == 0">
-                                <img :src="item[1]" class="d-block w-100" :alt="key">
+                              <div class="imgbox">
+                                  <img :src="item[1]" class="d-block w-100" :alt="key">
+                            </div>
                             </div>
 
                         </template>
                         <template v-for="(item,key) in picture_array">
-                            <div class="carousel-item" 
+                            <div class="carousel-item " 
                               v-if="key != 0">
-                                <img :src="item[1]" class="d-block w-100" :alt="key">
+                              <div class="imgbox">
+                                  <img :src="item[1]" class="d-block w-100" :alt="key">
+                            </div>
+
                             </div>
 
                         </template>
@@ -97,11 +101,13 @@
             <!-- <img class="col-md-7"
                 :src="spot_data.Picture.PictureUrl1" :alt="spot_data.ScenicSpotName"> -->
             <div class="col-md-5">
+                <!-- {{list_menu[detail_type]}} ppp -->
+                <!-- {{spot_data}} -->
                 <header class="mb-5">
                     <h3><b>{{spot_data.ScenicSpotName}}{{spot_data.HotelName}}{{spot_data.RestaurantName}}{{spot_data.ActivityName}}</b></h3>
                     <div>
                         <span class="area fw-bolder text-info"><i class="bi bi-geo-alt  m-2  d-inline-block"></i> {{spot_data.City}}</span>
-                        <span>
+                        <span>   &ensp;&ensp;&ensp;&ensp;
                             <span>{{spot_data.Class1}}{{spot_data.Class}}</span>
                             <span>{{spot_data.Class2}}</span>
                             <span>{{spot_data.Class3}}</span>
@@ -133,12 +139,12 @@
                         <h4 class="">景點介紹</h4>
                     </div>
                     <div class="col-10 overflow-hidden end-hide-parent">   
-                        <p id="detail"class="end-hide">{{spot_data.DescriptionDetail}}</p>
-                        <a href="#test" class="no-decoration">
-                            <div id="openDetail" class=" text-center text-info "
-                            v-if='detail_open==false' @click="openDetail">--- 完整介紹 &nbsp;&nbsp; ∨ ---</div>
-                            <div id="openDetail" class=" text-center text-info "
+                        <p id="detail"class="end-hide">{{spot_data.Description}}</p>
+                        <a id="detail-end" href="#detail" class="no-decoration " style="display:none">
+                            <div class=" text-center text-info "
                             v-if='detail_open==true' @click="openDetail">--- 縮回 &nbsp;&nbsp; ∧ ---</div>
+                            <div class=" text-center text-info "
+                            v-if='detail_open==false' @click="openDetail">--- 完整介紹 &nbsp;&nbsp; ∨ ---</div>
                         </a>
                         
                     </div>

@@ -13,15 +13,24 @@ const App=Vue.createApp({
                     'Address':['景點地址','Address'],
                     'WebsiteUrl':['官方網站','WebsiteUrl'],
                     },
-                "Restaurant":{},
-                "Hotel":{
-                    'OpenTime':['開放時間','OpenTime'],
-                    'TickerInfo':['票價資訊','TickerInfo'],
+                "Restaurant":{
+                    'OpenTime':['營業時間','OpenTime'],
                     'Phone':['聯絡電話','Phone'],
-                    'Address':['景點地址','Address'],
+                    'Address':['店家地址','Address'],
                     'WebsiteUrl':['官方網站','WebsiteUrl'],
                 },
-                "Activity":{},
+                "Hotel":{
+                    'Phone':['聯絡電話','Phone'],
+                    'Address':['住宿地址','Address'],
+                    'WebsiteUrl':['官方網站','WebsiteUrl'],
+                },
+                "Activity":{
+                    'TickerInfo':['票價資訊','TickerInfo'],
+                    'Organizer':['主辦單位','Organizer'],
+                    'Phone':['聯絡電話','Phone'],
+                    'Address':['景點地址','Address'],
+                    'WebsiteUrl':['官方網址','WebsiteUrl'],
+                },
             },
             spot_data:{"ScenicSpotID":"C1_315080500H_000068",
                 "ScenicSpotName":"紫坪",
@@ -63,9 +72,8 @@ const App=Vue.createApp({
         }
     },
     methods:{
-        // return_trychange(){
-        //     trychange[1]=this.spot_data;
-        // }
+        // ---------------------------
+        // search相關
         get_url_searchBar(e){
             let toEng={
                 活動:"Activity",
@@ -131,10 +139,13 @@ const App=Vue.createApp({
 
 
         },
+        //----------------------------
+        // 網址處理閜關
         get_pageTarget_data(){
             let reAry=new Array,
                 url = location.href,
                 temp;
+                url=url.split("#")[0];
             if(url.indexOf('?')!=-1){
                  let urlData = url.split('?')[1].split('&');
                 for(i=0;i<=urlData.length-1;i++){
@@ -192,6 +203,28 @@ const App=Vue.createApp({
         search_Target(){
             
         },
+        //--------------------------------
+        // 詳細介紹相關
+        getDivHeight(id) {
+            let e = document.getElementById(id);
+            console.log(e);
+            return e.clientHeight;
+        },
+        showDetailEnd(){
+            // console.log('DH=');
+            let lineH = parseInt(window.getComputedStyle(document.documentElement)["fontSize"]);
+            let DH = this.getDivHeight('detail');
+            if(DH/lineH > 4){
+                // console.log('33333')
+                document.querySelector('#detail-end').style.display='block';
+            };
+            
+            console.log('lineH='+lineH);
+            // console.log(typeof(lineH));
+            console.log('DH='+DH);
+            console.log(DH/lineH);
+
+        },
         openDetail(){
             let e = document.getElementById('detail');
             this.detail_open=!this.detail_open;
@@ -199,8 +232,21 @@ const App=Vue.createApp({
                 e.setAttribute('class','')
             }else{
                 e.setAttribute('class','end-hide')
-                
             }
+        },
+        //---------------------------
+        // spot_data處理相關
+        spot_data_process(data){
+            if(!data.City){
+                this.spot_data.City=this.spot_data.Address.substr(0,3);
+            };
+            let typeName=['ScenicSpotName','HotelName','RestaurantName','ActivityName'];
+            typeName.forEach((name)=>{
+                if(!this.spot_data[name]){
+                    this.spot_data[name]="";
+                };
+            });
+            return 0;
         },
         // show_map(map){
         //     
@@ -208,6 +254,7 @@ const App=Vue.createApp({
         // },
         creat_map(aa){
 
+            console.log('map=');
             console.log(aa);
             const map = L.map("Map", {
                 center: [aa.PositionLat, aa.PositionLon],
@@ -234,9 +281,8 @@ const App=Vue.createApp({
             return this.jsonData;
         }).
         then(response=>{
-            if(!response.City){
-                this.spot_data.City=this.spot_data.Address.substr(0,3);
-            };
+           this.spot_data_process(response);
+
             return response.Position;
         }).
         then(response=>{
@@ -259,17 +305,23 @@ const App=Vue.createApp({
             } ) 
             // this.spot_data.Picture
             // console.log('圖片'+this.spot_data.Picture);
+        }).
+        then(response=>{
+            setTimeout(this.showDetailEnd(),3000)
+            
         });
 
 
     },
     watch:{
+        
         spot_data(){
   
         },
     },
     mounted(){
-
+        let e = document.getElementById('detail');
+            // this.detail_open=!this.detail_open;
         
     }
     
