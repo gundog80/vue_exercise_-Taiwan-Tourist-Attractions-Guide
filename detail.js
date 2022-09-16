@@ -4,8 +4,9 @@ const App=Vue.createApp({
             detail_open:false,
             h1:'test',
             detail_type:"ScenicSpot",
+            city:"taypei",
             picture_array:[],
-            list_menu:{
+            spot_list_menu1:{
                 "ScenicSpot":{
                     'OpenTime':['開放時間','OpenTime'],
                     'TickerInfo':['票價資訊','TickerInfo'],
@@ -31,6 +32,57 @@ const App=Vue.createApp({
                     'Address':['景點地址','Address'],
                     'WebsiteUrl':['官方網址','WebsiteUrl'],
                 },
+            },
+            spot_list_menu2:{
+                "ScenicSpot":{
+                    "Remarks":"注意事項"
+                    },
+                "Restaurant":{
+                    // (地圖缺交通)
+                    // a:"無",
+                },
+                "Hotel":{
+                    "Spec":"房型價格",
+                    "ServiceInfo":"服務項目",
+                    "Phone":"電話",
+                },
+                "Activity":{
+                    "Remarks":"注意事項",
+                },
+            },
+            ad_list_menu:{
+                "ScenicSpot":["附近景點","相似景點"],
+                "Restaurant":["附近美食","相似旅宿"],
+                "Hotel":["附近景點","附近美食","相似旅宿"],
+                "Activity":["同期活動,相似活動"],
+            },
+            toEng:{
+                活動:"Activity",
+                景點:"ScenicSpot",
+                住宿:"Hotel",
+                餐飲:"Restaurant",
+                台北市:"Taipei",
+                新北市:"NewTaipei",
+                桃園市:"Taoyuan",
+                台中市:"Taichung",
+                台南市:"Tainan",
+                高雄市:"Kaohsiung",
+                基隆市:"Keelung",
+                新竹市:"Hsinchu",
+                新竹縣:"HsinchuCounty",
+                苗壢縣:"MiaoliCounty",
+                彰化縣:"ChanghuaCounty",
+                南投縣:"NantouCounty",
+                雲林縣:"YunlinCounty",
+                嘉義縣:"ChiayiCounty",
+                嘉義市:"Chiayi",
+                屏東縣:"PingtungCounty",
+                宜蘭縣:"YilanCounty",
+                花蓮縣:"HualienCounty",
+                台東縣:"TaitungCounty",
+                金門縣:"KinmenCounty",
+                澎湖縣:"PenghuCounty",
+                連江縣:"LienchiangCounty",
             },
             spot_data:{"ScenicSpotID":"C1_315080500H_000068",
                 "ScenicSpotName":"紫坪",
@@ -72,6 +124,15 @@ const App=Vue.createApp({
         }
     },
     methods:{
+        data_to_array:function(data){
+            let temp;
+            do{
+                temp=data;
+                data=data.replace(',',';');
+                console.log(data);
+            }while(temp!=data);
+            return data.split(';');
+        },
         // ---------------------------
         // search相關
         get_url_searchBar(e){
@@ -79,10 +140,29 @@ const App=Vue.createApp({
                 活動:"Activity",
                 景點:"ScenicSpot",
                 住宿:"Hotel",
-                餐飲:"Restaurant",
-                台北:"Taipei",
-                新北:"NewTaipei",
-                新竹:"Hsinchu",
+                美食:"Restaurant",
+                台北市:"Taipei",
+                新北市:"NewTaipei",
+                桃園市:"Taoyuan",
+                台中市:"Taichung",
+                台南市:"Tainan",
+                高雄市:"Kaohsiung",
+                基隆市:"Keelung",
+                新竹市:"Hsinchu",
+                新竹縣:"HsinchuCounty",
+                苗壢縣:"MiaoliCounty",
+                彰化縣:"ChanghuaCounty",
+                南投縣:"NantouCounty",
+                雲林縣:"YunlinCounty",
+                嘉義縣:"ChiayiCounty",
+                嘉義市:"Chiayi",
+                屏東縣:"PingtungCounty",
+                宜蘭縣:"YilanCounty",
+                花蓮縣:"HualienCounty",
+                台東縣:"TaitungCounty",
+                金門縣:"KinmenCounty",
+                澎湖縣:"PenghuCounty",
+                連江縣:"LienchiangCounty",
             };
             let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/",
                 subTarget="?%24format=JSON",
@@ -210,13 +290,14 @@ const App=Vue.createApp({
             console.log(e);
             return e.clientHeight;
         },
-        showDetailEnd(){
+        showDetailButtom(){
             // console.log('DH=');
             let lineH = parseInt(window.getComputedStyle(document.documentElement)["fontSize"]);
             let DH = this.getDivHeight('detail');
-            if(DH/lineH > 4){
+            if(DH/lineH > 6){
                 // console.log('33333')
-                document.querySelector('#detail-end').style.display='block';
+                document.querySelector('#detail-buttom').style.display='block';
+                // document.getElementById('detail').setAttribute('class','end-hide')
             };
             
             console.log('lineH='+lineH);
@@ -226,23 +307,29 @@ const App=Vue.createApp({
 
         },
         openDetail(){
-            let e = document.getElementById('detail');
+            let e =document.querySelector("#detail");
             this.detail_open=!this.detail_open;
+            console.log(e);
+            // e.setAttribute('data-open')=open;
             if(this.detail_open){
+                console.log(e);
                 e.setAttribute('class','')
             }else{
-                e.setAttribute('class','end-hide')
+                console.log(e);
+                e.setAttribute('class','max_hight-5 filter_parent')
             }
         },
         //---------------------------
         // spot_data處理相關
         spot_data_process(data){
             if(!data.City){
-                this.spot_data.City=this.spot_data.Address.substr(0,3);
+                this.city=this.spot_data.City=data.Address.substr(0,3);
+            }else{
+                this.city=data.City;
             };
             let typeName=['ScenicSpotName','HotelName','RestaurantName','ActivityName'];
             typeName.forEach((name)=>{
-                if(!this.spot_data[name]){
+                if(!data[name]){
                     this.spot_data[name]="";
                 };
             });
@@ -270,6 +357,9 @@ const App=Vue.createApp({
           .bindPopup(this.spot_data.ScenicSpotName+this.spot_data.HotelName+this.spot_data.RestaurantName+this.spot_data.ActivityName)
           .openPopup();
         }
+    },
+    computed:{
+
     },
     created(){
         // console.log("hi created");
@@ -307,7 +397,7 @@ const App=Vue.createApp({
             // console.log('圖片'+this.spot_data.Picture);
         }).
         then(response=>{
-            setTimeout(this.showDetailEnd(),3000)
+            setTimeout(this.showDetailButtom(),3000)
             
         });
 
@@ -332,8 +422,9 @@ App.component('search_bar',{
         return{
             search_bar:{
                 selection:{
-                    地區:{name:"地區",data:["台北","新北","新竹"],value:""},
-                    類別:{name:"類別",data:["活動","景點","住宿"],value:""},
+                    地區:{name:"地區",data:["台北市","新北市","桃園市","台中市","台南市","高雄市","基隆市","新竹市","新竹縣","苗壢縣","彰化縣","南投縣","雲林縣","嘉義縣","嘉義市","屏東縣","宜蘭縣","花蓮縣","台東縣","金門縣","澎湖縣","連江縣",]
+                            ,value:""},
+                    類別:{name:"類別",data:["活動","景點","住宿","美食",],value:""},
                 },
                 searchText: "",
                 // data

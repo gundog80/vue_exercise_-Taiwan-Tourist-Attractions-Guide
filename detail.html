@@ -98,11 +98,7 @@
                     </button>
                   </div>
             </div>
-            <!-- <img class="col-md-7"
-                :src="spot_data.Picture.PictureUrl1" :alt="spot_data.ScenicSpotName"> -->
             <div class="col-md-5">
-                <!-- {{list_menu[detail_type]}} ppp -->
-                <!-- {{spot_data}} -->
                 <header class="mb-5">
                     <h3><b>{{spot_data.ScenicSpotName}}{{spot_data.HotelName}}{{spot_data.RestaurantName}}{{spot_data.ActivityName}}</b></h3>
                     <div>
@@ -115,36 +111,31 @@
                     </div>
                 </header>
                 <ul class="m-3" >
-                    <li v-for='(item,index) in list_menu[detail_type]'>
+                    <li v-for='(item,index) in spot_list_menu1[detail_type]'>
                         <span class="fw-bolder col-3 d-inline-block m-1">{{item[0]}}</span>{{spot_data[item[1]]}}</li>
                 
                 </ul>
-                <!-- <ul class="m-3">
-                    <li><span class="fw-bolder col-3 d-inline-block m-1">開放時間</span>    {{spot_data.OpenTime}}</li>
-                    <li><span class="fw-bolder col-3 d-inline-block m-1">票價資訊</span>    {{spot_data.TicketInfo}}</li>
-                    <li><span class="fw-bolder col-3 d-inline-block m-1">聯絡電話</span>    {{spot_data.Phone}}</li>
-                    <li><span class="fw-bolder col-3 d-inline-block m-1">景點地址</span>    {{spot_data.Address}}</li>
-                    <li><span class="fw-bolder col-3 d-inline-block m-1">{{trychange[0]}}</span>    {{trychange[1]}}</li>
-                    <li><span class="fw-bolder col-3 d-inline-block m-1">官方網站</span>    </li>
-                </ul> -->
             </div>
 
         </div>
     </section>
     <section class="container">
         <div class="row">
-            <div class="container col-8">
+            <div class="container col-8">  
                 <div class="row">  <!-- 景點介紹 -->
                     <div class="col-2">
                         <h4 class="">景點介紹</h4>
                     </div>
-                    <div class="col-10 overflow-hidden end-hide-parent">   
-                        <p id="detail"class="end-hide">{{spot_data.Description}}</p>
-                        <a id="detail-end" href="#detail" class="no-decoration " style="display:none">
+                    <!-- <div class="col-10 overflow-hidden end-hide-parent">    -->
+                    <div class="col-10 ">   
+                        <p id="detail"class="max_hight-5 filter_parent">{{spot_data.Description}}
+                            <span class="hide_filter"></span>
+                        </p>
+                        <a id="detail-buttom" href="#detail" class="no-decoration " :data-open="detail_open" style="display:none">
                             <div class=" text-center text-info "
-                            v-if='detail_open==true' @click="openDetail">--- 縮回 &nbsp;&nbsp; ∧ ---</div>
+                            v-show='detail_open==true' @click="openDetail">--- 縮回 &nbsp;&nbsp; ∧ ---</div>
                             <div class=" text-center text-info "
-                            v-if='detail_open==false' @click="openDetail">--- 完整介紹 &nbsp;&nbsp; ∨ ---</div>
+                            v-show='detail_open==false' @click="openDetail">--- 完整介紹 &nbsp;&nbsp; ∨ ---</div>
                         </a>
                         
                     </div>
@@ -158,12 +149,37 @@
 
                         </div>
                         <div>
-                            <div>交通資訊</div>
-                            <p>{{spot_data.TravelInfo}}</p>
+                            <div class="h3">交通資訊</div>
+                            <p class="max_hight-4 overflow_auto">{{spot_data.TravelInfo}}</p>
                         </div>
                     </div>
                 </div>
-                    
+                <template v-for="(item,key) in spot_list_menu2[detail_type]">
+                    <div v-if="spot_data[key] && key==Remarks" class="row">
+                        <div class="col-2">
+                            <h4 class="">{{item}}</h4>
+                        </div>
+                        <div class="col-10 overflow-hidden end-hide-parent">
+                            <p :id=key class="">{{spot_data[key]}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row" v-if="spot_data[key] " >
+                    <!-- <div class="row" v-if="spot_data[key] && (key==Spec || key==ServinceInfo)" > -->
+                        <div class="col-2">
+                            <h4 class="">{{item}}</h4>
+                        </div>
+                        <div class="col-10 ">
+                            <ul class="d-flex flex-wrap" >
+                                <!-- <li class="col-5" v-for="(i,k) in spot_data[key]">{{i}}</li> -->
+                                    <li class="col-5" v-for="(i,k) in data_to_array(spot_data[key],';')" v-show="i!=''">
+                                        {{i}}</li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+                </template>    
                         <!-- <ul>
                             <li>
                             </li>
