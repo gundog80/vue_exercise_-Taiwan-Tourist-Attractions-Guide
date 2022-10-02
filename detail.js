@@ -61,6 +61,7 @@ const App=Vue.createApp({
                 景點:"ScenicSpot",
                 住宿:"Hotel",
                 餐飲:"Restaurant",
+                美食:"Restaurant",
                 台北市:"Taipei",
                 新北市:"NewTaipei",
                 桃園市:"Taoyuan",
@@ -103,6 +104,7 @@ const App=Vue.createApp({
                 "UpdateTime":"2022-03-31T02:34:30+08:00",
                 "area":"台南市",
             },
+            aside_ad:[],
             aside_ad1:[{
                 title:"ad title",
                 data:{
@@ -137,32 +139,13 @@ const App=Vue.createApp({
         // search相關
         get_url_searchBar(e){
             let toEng={
-                活動:"Activity",
-                景點:"ScenicSpot",
-                住宿:"Hotel",
-                美食:"Restaurant",
-                台北市:"Taipei",
-                新北市:"NewTaipei",
-                桃園市:"Taoyuan",
-                台中市:"Taichung",
-                台南市:"Tainan",
-                高雄市:"Kaohsiung",
-                基隆市:"Keelung",
-                新竹市:"Hsinchu",
-                新竹縣:"HsinchuCounty",
-                苗壢縣:"MiaoliCounty",
-                彰化縣:"ChanghuaCounty",
-                南投縣:"NantouCounty",
-                雲林縣:"YunlinCounty",
-                嘉義縣:"ChiayiCounty",
-                嘉義市:"Chiayi",
-                屏東縣:"PingtungCounty",
-                宜蘭縣:"YilanCounty",
-                花蓮縣:"HualienCounty",
-                台東縣:"TaitungCounty",
-                金門縣:"KinmenCounty",
-                澎湖縣:"PenghuCounty",
-                連江縣:"LienchiangCounty",
+                活動:"Activity",景點:"ScenicSpot",住宿:"Hotel",美食:"Restaurant",
+
+                台北市:"Taipei",新北市:"NewTaipei",桃園市:"Taoyuan",台中市:"Taichung",台南市:"Tainan",
+                高雄市:"Kaohsiung",基隆市:"Keelung",新竹市:"Hsinchu",新竹縣:"HsinchuCounty",苗壢縣:"MiaoliCounty",
+                彰化縣:"ChanghuaCounty",南投縣:"NantouCounty",雲林縣:"YunlinCounty",嘉義縣:"ChiayiCounty",嘉義市:"Chiayi",
+                屏東縣:"PingtungCounty",宜蘭縣:"YilanCounty",花蓮縣:"HualienCounty",台東縣:"TaitungCounty",金門縣:"KinmenCounty",
+                澎湖縣:"PenghuCounty",連江縣:"LienchiangCounty",
             };
             let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/",
                 subTarget="?%24format=JSON",
@@ -280,9 +263,22 @@ const App=Vue.createApp({
             return url;
             // this.target_url=temp1+target_kind+temp2+targetID
         },
-        search_Target(){
-            
+        near_search_url(positionData,kind=this.detail_type,page=0,number=5,radius=10000){
+            console.log("hi near_serch_url",page,number,positionData);
+            let temp1="https://ptx.transportdata.tw/MOTC/v2/Tourism/";
+            // let kind=this.detail_type;
+            let spatialFilter='nearby(Position' + ',' + positionData.PositionLat + ',' + positionData.PositionLon + ',' + radius + ')';
+            let topp=number;
+            let skip=page*number;
+            let temp2='?%24'+'spatialFilter=' + spatialFilter +'&%24' + 'top=' + topp + '&%24' + 'skip='+ skip + "&%24format=JSON&%24";
+            let url=temp1+kind+temp2;
+            console.log('url='+url);
+            return url;
+
         },
+        // search_Target(){
+            
+        // },
         //--------------------------------
         // 詳細介紹相關
         getDivHeight(id) {
@@ -335,16 +331,14 @@ const App=Vue.createApp({
             });
             return 0;
         },
-        // show_map(map){
-        //     
+        // map相關
 
-        // },
-        creat_map(aa){
+        creat_map(m){
 
             console.log('map=');
-            console.log(aa);
+            console.log(m);
             const map = L.map("Map", {
-                center: [aa.PositionLat, aa.PositionLon],
+                center: [m.PositionLat, m.PositionLon],
                 zoom: 14
               });
           // 載入圖資
@@ -352,11 +346,50 @@ const App=Vue.createApp({
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>         contributors'
           }).addTo(map);
           // 設定標籤
-          L.marker([aa.PositionLat, aa.PositionLon])
+          L.marker([m.PositionLat, m.PositionLon])
           .addTo(map)
           .bindPopup(this.spot_data.ScenicSpotName+this.spot_data.HotelName+this.spot_data.RestaurantName+this.spot_data.ActivityName)
           .openPopup();
-        }
+        },
+        //AD相關
+        setAD(){
+            // function getADType() {
+            //     console.log( this);
+            //     return "aaaaa";
+            // };
+            let menu=this.ad_list_menu[this.detail_type];
+            menu.forEach(item=>{
+                console.log(item);
+                let searchType=item.substr(0,2),ADType=item.substr(2,4);
+                console.log(searchType);
+                console.log(ADType);
+                switch (searchType) {
+                    case "附近":
+                        // console.log(this.Position);
+                        let kind=this.toEng[ADType];
+                        let AdUrl=this.near_search_url(this.spot_data.Position,kind);
+                        // axios.get(AdUrl).
+                        // then(response=>{
+                        //     console.log(response);
+                        //     let temp=response.data;
+                        //     // this.aside_ad.push( temp );
+                        //     return temp;
+                        // }).than(response=>{
+                        //     console.log(response);
+                        // });
+
+                        // console.log(temp);
+                        console.log("111");
+                        break;
+                    case '相似':
+                        console.log("222");
+                         break;
+                    default: 
+                        console.log("333")
+                } 
+            })
+        },
+
     },
     computed:{
 
@@ -399,7 +432,10 @@ const App=Vue.createApp({
         then(response=>{
             setTimeout(this.showDetailButtom(),3000)
             
-        });
+        }).
+        then(response=>(
+            this.setAD()
+        ));
 
 
     },
