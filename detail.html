@@ -101,12 +101,12 @@
             <div class="col-md-5">
                 <header class="mb-5">
                     <h3><b>{{spot_data.ScenicSpotName}}{{spot_data.HotelName}}{{spot_data.RestaurantName}}{{spot_data.ActivityName}}</b></h3>
-                    <div>
+                    <div class="d-flex align-items-center  justify-content-between">
                         <span class="area fw-bolder text-info"><i class="bi bi-geo-alt  m-2  d-inline-block"></i> {{spot_data.City}}</span>
-                        <span>   &ensp;&ensp;&ensp;&ensp;
-                            <span>{{spot_data.Class1}}{{spot_data.Class}}</span>
-                            <span>{{spot_data.Class2}}</span>
-                            <span>{{spot_data.Class3}}</span>
+                        <span class="mx-2">   
+                            <span class="mx-2" v-if="(spot_data.Class1 + spot_data.Class)">{{spot_data.Class1}}{{spot_data.Class}}</span>
+                            <span class="mx-2" v-if="spot_data.Class2">{{spot_data.Class2}}</span>
+                            <span class="mx-2" v-if="spot_data.Class3">{{spot_data.Class3}}</span>
                         </span>
                     </div>
                 </header>
@@ -198,7 +198,36 @@
             </div>                
             <aside class="col-4">
                 hi this is aside AD
-                <aside-ad-1>
+                <template v-for="(item,key) in ad_list_menu[detail_type]">
+                    <h4 class="col-12">{{item}}</h4>
+                    <!-- card -->
+                    <template v-for="(item2,key2) in aside_ad[key] ">
+
+                        <!-- <aside_AD_card class="d-flex"> -->
+                        <aside_AD_card class="d-flex">
+                            <div class="adImg col-4">
+                                <div class="square_img">
+                                    <img styel="" :src=item2.Picture.PictureUrl1 alt="" >
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <h6 sytle="white-space:nowrap"class="oh"> {{item2.ScenicSpotName}}
+                                        {{item2.HotelName}}
+                                        {{item2.RestaurantName}}
+                                        {{item2.ActivityName}}</h3>
+                                <div>
+                                    <span class="area fw-bolder text-info"><i class="bi bi-geo-alt  m-2  d-inline-block"></i> {{spot_data.City}}</span>
+                                </div>
+                                <span class="mx-2" v-if="spot_data.Class1 + spot_data.Class">{{item2.Class1}}{{item2.Class}}</span>
+                                <span class="mx-2" v-if="spot_data.Class2">{{item2.Class2}}</span>
+                                <span class="mx-2" v-if="spot_data.Class3">{{item2.Class3}}</span>
+                            </div>
+                        </aside_AD_card>
+                        <!-- </aside_AD_card> -->
+                    </template>
+                    <!-- /card -->
+                </template>
+                <!-- <aside-ad-1>
                     <div v-for="(item,index) in aside_ad1" class="">
                         <h4 class="">{{item.title}}</h4>
                         <div  class="row">
@@ -218,7 +247,7 @@
                             </div>
                         </div>
                     </div>
-                </aside-ad-1>
+                </aside-ad-1> -->
             </aside>
         </div>
     </section>

@@ -357,29 +357,26 @@ const App=Vue.createApp({
             //     console.log( this);
             //     return "aaaaa";
             // };
-            let n=-1,menu=this.ad_list_menu[this.detail_type];
+            let menu=this.ad_list_menu[this.detail_type];
             menu.forEach(item=>{
-                n++;
-                console.log(item,n);
+                console.log(item);
                 let searchType=item.substr(0,2),ADType=item.substr(2,4);
                 console.log(searchType);
                 console.log(ADType);
                 switch (searchType) {
                     case "附近":
                         // console.log(this.Position);
-                        let n2=n,kind=this.toEng[ADType];
+                        let kind=this.toEng[ADType];
                         let AdUrl=this.near_search_url(this.spot_data.Position,kind);
-                        axios.get(AdUrl).
-                        then(response=>{
-                            // console.log(response);
-                            // let temp=response.data;
-                        //     // this.aside_ad.push( temp );
-                            return response.data;
-                        }).
-                        then(response=>{
-                            this.aside_ad[n2]=response;
+                        // axios.get(AdUrl).
+                        // then(response=>{
                         //     console.log(response);
-                        });
+                        //     let temp=response.data;
+                        //     // this.aside_ad.push( temp );
+                        //     return temp;
+                        // }).than(response=>{
+                        //     console.log(response);
+                        // });
 
                         // console.log(temp);
                         console.log("111");
