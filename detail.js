@@ -263,14 +263,17 @@ const App=Vue.createApp({
             return url;
             // this.target_url=temp1+target_kind+temp2+targetID
         },
-        near_search_url(positionData,kind=this.detail_type,page=0,number=5,radius=10000){
+        near_search_url(positionData,kind=this.detail_type,filter,page=0,number=5,radius=10000){
             console.log("hi near_serch_url",page,number,positionData);
             let temp1="https://ptx.transportdata.tw/MOTC/v2/Tourism/";
             // let kind=this.detail_type;
             let spatialFilter='nearby(Position' + ',' + positionData.PositionLat + ',' + positionData.PositionLon + ',' + radius + ')';
             let topp=number;
             let skip=page*number;
-            let temp2='?%24'+'spatialFilter=' + spatialFilter +'&%24' + 'top=' + topp + '&%24' + 'skip='+ skip + "&%24format=JSON&%24";
+            let filter2='$'+filter;
+            // let select="$select=ActivityID,HotelID,ReataurantID,ScenicSpotID,ActivityName,HotelName,ReataurantName,ScenicSpotName,City,Class,Class1,Class2,Class3,Picture";
+            let select="$select=City,Picture";
+            let temp2='?'+ select + '&%24'+'spatialFilter=' + spatialFilter + '&%24' +filter2+  '&%24' + 'top=' + topp + '&%24' + 'skip='+ skip + "&%24format=JSON&%24";
             let url=temp1+kind+temp2;
             console.log('url='+url);
             return url;
@@ -367,9 +370,9 @@ const App=Vue.createApp({
                 switch (searchType) {
                     case "附近":
                         // console.log(this.Position);
-                        let n2=n,kind=this.toEng[ADType];
-                        let AdUrl=this.near_search_url(this.spot_data.Position,kind);
-                        axios.get(AdUrl).
+                        let n_near=n,kind_near=this.toEng[ADType];
+                        let AdUrl_near=this.near_search_url(this.spot_data.Position,kind_near);
+                        axios.get(AdUrl_near).
                         then(response=>{
                             // console.log(response);
                             // let temp=response.data;
@@ -377,15 +380,46 @@ const App=Vue.createApp({
                             return response.data;
                         }).
                         then(response=>{
-                            this.aside_ad[n2]=response;
+                            this.aside_ad[n_near]=response;
                         //     console.log(response);
                         });
 
                         // console.log(temp);
-                        console.log("111");
+                        // console.log("111");
                         break;
                     case '相似':
                         console.log("222");
+                        let n_like=n,kind_like=this.toEng[ADType],
+                            page=1,number=5,filter='filter=';
+                            if (this.spot_data.Class){
+                                filter=filter + "Class eq '" + this.spot_data.Class + "'" +' or ';
+                            };
+                            if(this.spot_data.Class1){
+                                filter=filter + 'Class1 eq ' + this.data.Class1 + ' or ' +
+                                                'Class2 eq ' + this.data.Class1 + ' or ' + 
+                                                'Class3 eq ' + this.data.Class1 + ' or ';
+                            };
+                            if(this.spot_data.Class2){
+                                filter=filter + 'Class1 eq ' + this.data.Class2 + ' or ' +
+                                                'Class2 eq ' + this.data.Class2 + ' or ' + 
+                                                'Class3 eq ' + this.data.Class2 + ' or ';
+                            };
+                            if(this.spot_data.Class3){
+                                filter=filter + 'Class1 eq ' + this.data.Class3 + ' or ' +
+                                                'Class2 eq ' + this.data.Class3 + ' or ' + 
+                                                'Class3 eq ' + this.data.Class3 + ' or ';
+                            };
+
+                        console.log(filter)
+                        let AdUrl_like=this.near_search_url(this.spot_data.Position,kind_like,filter,page,number);
+                        axios.get(AdUrl_like).
+                        then(response=>{
+                            return response.data;
+                        }).
+
+                        then(resp=>{
+                            this.aside_ad[n_like]=resp;
+                        });
                          break;
                     default: 
                         console.log("333")
