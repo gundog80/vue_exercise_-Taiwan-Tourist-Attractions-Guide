@@ -199,17 +199,17 @@
             <aside class="col-4">
                 hi this is aside AD
                 <template v-for="(item,key) in ad_list_menu[detail_type]">
-                    <h4 class="col-12">{{item}}</h4>
+                    <h4 class="col-12">{{item}} {{key}}</h4>
                     <!-- card -->
                     <template v-for="(item2,key2) in aside_ad[key] ">
 
                         <!-- <aside_AD_card class="d-flex"> -->
                         <aside_AD_card class="d-flex">
-                            <div class="adImg col-4">
+                            <a class="adImg col-4" :href="item2.chick_url"  target="_blank">
                                 <div class="square_img">
                                     <img styel="" :src=item2.Picture.PictureUrl1 alt="" >
                                 </div>
-                            </div>
+                            </a>
                             <div class="col-8">
                                 <h6 sytle="white-space:nowrap"class="oh"> {{item2.ScenicSpotName}}
                                         {{item2.HotelName}}

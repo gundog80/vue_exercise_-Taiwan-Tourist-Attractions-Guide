@@ -59,6 +59,7 @@ const App=Vue.createApp({
             toEng:{
                 活動:"Activity",
                 景點:"ScenicSpot",
+                旅宿:"Hotel",
                 住宿:"Hotel",
                 餐飲:"Restaurant",
                 美食:"Restaurant",
@@ -139,7 +140,7 @@ const App=Vue.createApp({
         // search相關
         get_url_searchBar(e){
             let toEng={
-                活動:"Activity",景點:"ScenicSpot",住宿:"Hotel",美食:"Restaurant",
+                活動:"Activity",景點:"ScenicSpot",住宿:"Hotel",旅宿:"Hotel",美食:"Restaurant",
 
                 台北市:"Taipei",新北市:"NewTaipei",桃園市:"Taoyuan",台中市:"Taichung",台南市:"Tainan",
                 高雄市:"Kaohsiung",基隆市:"Keelung",新竹市:"Hsinchu",新竹縣:"HsinchuCounty",苗壢縣:"MiaoliCounty",
@@ -263,7 +264,7 @@ const App=Vue.createApp({
             return url;
             // this.target_url=temp1+target_kind+temp2+targetID
         },
-        near_search_url(positionData,kind=this.detail_type,filter,page=0,number=5,radius=10000){
+        ad_search_url(positionData,kind=this.detail_type,filter,page=0,number=5,radius=10000){
             console.log("hi near_serch_url",page,number,positionData);
             let temp1="https://ptx.transportdata.tw/MOTC/v2/Tourism/";
             // let kind=this.detail_type;
@@ -271,9 +272,30 @@ const App=Vue.createApp({
             let topp=number;
             let skip=page*number;
             let filter2='$'+filter;
-            // let select="$select=ActivityID,HotelID,ReataurantID,ScenicSpotID,ActivityName,HotelName,ReataurantName,ScenicSpotName,City,Class,Class1,Class2,Class3,Picture";
-            let select="$select=City,Picture";
-            let temp2='?'+ select + '&%24'+'spatialFilter=' + spatialFilter + '&%24' +filter2+  '&%24' + 'top=' + topp + '&%24' + 'skip='+ skip + "&%24format=JSON&%24";
+            console.log(kind);
+            let select1="";
+            switch (kind){
+                case "Activity":
+                    select1="$select=ActivityID,ActivityName,Class1,Class2,Class3,";
+                    break;
+                case "Hotel":
+                    select1="$select=HotelID,HotelName,Class,";
+                    break;
+                case "Reataurant":
+                    select1="$select=ReataurantID,ReataurantName,Class1,Class2,Class3,";
+                    break;
+                case "ScenicSpot":
+                    select1="$select=ScenicSpotID,ScenicSpotName,Class1,Class2,Class3,";
+                    break;
+
+                default:
+                    break;
+                
+                
+            }
+            let select2="City,Picture";
+            // let select="$select=City,Picture";
+            let temp2='?'+ select1 + select2 + '&%24'+'spatialFilter=' + spatialFilter + '&%24' +filter2+  '&%24' + 'top=' + topp + '&%24' + 'skip='+ skip + "&%24format=JSON&%24";
             let url=temp1+kind+temp2;
             console.log('url='+url);
             return url;
@@ -366,21 +388,25 @@ const App=Vue.createApp({
                 console.log(item,n);
                 let searchType=item.substr(0,2),ADType=item.substr(2,4);
                 console.log(searchType);
-                console.log(ADType);
+                console.log("ADT=",ADType);
                 switch (searchType) {
                     case "附近":
                         // console.log(this.Position);
                         let n_near=n,kind_near=this.toEng[ADType];
-                        let AdUrl_near=this.near_search_url(this.spot_data.Position,kind_near);
+                        let AdUrl_near=this.ad_search_url(this.spot_data.Position,kind_near);
                         axios.get(AdUrl_near).
                         then(response=>{
                             // console.log(response);
                             // let temp=response.data;
                         //     // this.aside_ad.push( temp );
-                            return response.data;
+                            return [response.data,kind_near];
                         }).
                         then(response=>{
-                            this.aside_ad[n_near]=response;
+                            let idAttr=response[1] + "ID";
+                            response[0].forEach(item=>{
+                                item.chick_url="./detail.html?kind="+response[1].toLowerCase()+"&id="+item[idAttr];
+                            });
+                            this.aside_ad[n_near]=response[0];
                         //     console.log(response);
                         });
 
@@ -391,6 +417,7 @@ const App=Vue.createApp({
                         console.log("222");
                         let n_like=n,kind_like=this.toEng[ADType],
                             page=1,number=5,filter='filter=';
+                            console.log("kind_like=",kind_like,this.toEng[ADType]);
                             if (this.spot_data.Class){
                                 filter=filter + "Class eq '" + this.spot_data.Class + "'" +' or ';
                             };
@@ -411,14 +438,22 @@ const App=Vue.createApp({
                             };
 
                         console.log(filter)
-                        let AdUrl_like=this.near_search_url(this.spot_data.Position,kind_like,filter,page,number);
+                        let AdUrl_like=this.ad_search_url(this.spot_data.Position,kind_like,filter,page,number);
                         axios.get(AdUrl_like).
                         then(response=>{
-                            return response.data;
+                            return [response.data,kind_like];
                         }).
 
                         then(resp=>{
-                            this.aside_ad[n_like]=resp;
+                            let idAttr=resp[1] + "ID";
+                            console.log('resp=',resp);
+                            resp[0].forEach(
+                                item=>{
+                                    // console.log(idAttr);
+                                    item.chick_url="./detail.html?kind="+resp[1].toLowerCase()+"&id="+item[idAttr];
+                                }
+                            )
+                            this.aside_ad[n_like]=resp[0];
                         });
                          break;
                     default: 
