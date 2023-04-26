@@ -7,6 +7,10 @@ body{
 .container{
   max-width: 1024px;
 }
+#sub-detail .row{
+  padding:32px 0 32px 0;
+  border-bottom: 1px,solid,rgba(33,33,33,0.2);  
+}
 .rounded-none
 {
   -webkit-border-radius: 0;
@@ -20,6 +24,9 @@ h3
 h4{
   border-left: .5em rgb(0, 217, 255) solid;
   border-style:solid;
+}
+.fs-7{
+  font-size: 0.8rem;
 }
 .end-hide-parent{
   position:relative;

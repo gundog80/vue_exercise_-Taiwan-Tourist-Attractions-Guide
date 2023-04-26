@@ -4,9 +4,9 @@ const App=Vue.createApp({
             detail_open:false,
             h1:'test',
             detail_type:"ScenicSpot",
-            city:"taypei",
+            city:"taipei",  
             picture_array:[],
-            spot_list_menu1:{
+            spot_list_menu1:{   //景點概況介紹所需欄位
                 "ScenicSpot":{
                     'OpenTime':['開放時間','OpenTime'],
                     'TickerInfo':['票價資訊','TickerInfo'],
@@ -33,7 +33,7 @@ const App=Vue.createApp({
                     'WebsiteUrl':['官方網址','WebsiteUrl'],
                 },
             },
-            spot_list_menu2:{
+            spot_list_menu2:{   //地圖後所需欄位 需重整為template
                 "ScenicSpot":{
                     "Remarks":"注意事項"
                     },
@@ -86,7 +86,7 @@ const App=Vue.createApp({
                 澎湖縣:"PenghuCounty",
                 連江縣:"LienchiangCounty",
             },
-            spot_data:{"ScenicSpotID":"C1_315080500H_000068",
+            spot_data:{"ScenicSpotID":"C1_315080500H_000068", //初始值
                 "ScenicSpotName":"紫坪",
                 "DescriptionDetail":"紫坪位在綠島最南方，緊鄰「綠島露營區」。從露營區旁的步道，可通往海岸邊的潟湖「紫坪」。「紫坪」是一處由珊瑚礁構成的潮池，也是綠島著名的潟湖所在地，有全綠島最完整的潟湖地形以及珊瑚礁植群，更有茂盛的植物水芫花和珍貴的陸寄居蟹。外海儘管浪濤洶湧，內湖依然波平如鏡，宛若沉睡的湖水，清淺的躺在外珊瑚礁岩與內珊瑚貝砂灘間；水芫花灌叢身影倒映於平靜無波的水面上，潔白柔細的白砂鋪陳水底。熱帶海岸旖旎風情，盡在不言中。",
                 "Description":"紫坪位在綠島最南方，從附近的步道，可通往海岸邊的潟湖。此處是由珊瑚礁構成的潮池，也是綠島著名的潟湖所在地，有全綠島最完整的潟湖地形以及珊瑚礁植群，更有茂盛的植物水芫花和珍貴的陸寄居蟹。",
@@ -105,8 +105,8 @@ const App=Vue.createApp({
                 "UpdateTime":"2022-03-31T02:34:30+08:00",
                 "area":"台南市",
             },
-            aside_ad:[],
-            aside_ad1:[{
+            aside_ad:[],  //推論無用 測試後刪除
+            aside_ad1:[{    //推論無用 測試後刪除
                 title:"ad title",
                 data:{
                     'name':'ppp',
@@ -115,65 +115,24 @@ const App=Vue.createApp({
                     'city':"新北市"
                 },
             }],
-            // trychange:['測試',0],
-            // search_bar:{
-                //     selection:{
-            //         地區:{name:"地區",data:["台北","新北","新竹"],value:""},
-            //         類別:{name:"類別",data:["活動","景點","住宿"],value:""},
-            //     },
-            //     searchText: "",
-            //     // data
-            // },
+
         }
     },
     methods:{
-        data_to_array:function(data){
+        data_to_array:function(data){    //需調整位置 而且萬一只有一個房型或原始資料以;隔開 好像會錯
             let temp;
             do{
                 temp=data;
                 data=data.replace(',',';');
-                console.log(data);
+                // console.log(data);
             }while(temp!=data);
             return data.split(';');
         },
         // ---------------------------
         // search相關
-        get_url_searchBar(e){
-            let toEng={
-                活動:"Activity",景點:"ScenicSpot",住宿:"Hotel",旅宿:"Hotel",美食:"Restaurant",
 
-                台北市:"Taipei",新北市:"NewTaipei",桃園市:"Taoyuan",台中市:"Taichung",台南市:"Tainan",
-                高雄市:"Kaohsiung",基隆市:"Keelung",新竹市:"Hsinchu",新竹縣:"HsinchuCounty",苗壢縣:"MiaoliCounty",
-                彰化縣:"ChanghuaCounty",南投縣:"NantouCounty",雲林縣:"YunlinCounty",嘉義縣:"ChiayiCounty",嘉義市:"Chiayi",
-                屏東縣:"PingtungCounty",宜蘭縣:"YilanCounty",花蓮縣:"HualienCounty",台東縣:"TaitungCounty",金門縣:"KinmenCounty",
-                澎湖縣:"PenghuCounty",連江縣:"LienchiangCounty",
-            };
-            let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/",
-                subTarget="?%24format=JSON",
-                // subTarget="?%24top=30&%24format=JSON",
-                serachType="",city="";
-            Object.entries(e).forEach((item)=>{
-                let [k,v]=item;
-                switch(k){
-                    case "類別" :
-                        serachType=toEng[v];
-                        break;
-                    case "地區" :
-                        city=toEng[v];
-                        break;
-                    case "searchText" :
-                        if(v==''){
-                            break;
-                        };
-                    default:
-                        subTarget += "&%24" + k + "=" + v;
-                };
-            });
-        let url=baseTarget + serachType + '/' + city +  subTarget;
-        return url;
-        },
         // get_search:function(e){
-        get_search(e){
+        get_search(e){      //需更正 改到搜尋頁面處理 此處僅傳遞基訊即可
             if(!e.searchType){
                 e.searchType='searchBar';
             };
@@ -203,14 +162,48 @@ const App=Vue.createApp({
 
 
         },
+            get_url_searchBar(e){   //需更正 改到搜尋頁面處理 此處僅傳遞基訊即可 如果可能作為底下的副函數
+                let toEng={
+                    活動:"Activity",景點:"ScenicSpot",住宿:"Hotel",旅宿:"Hotel",美食:"Restaurant",
+                    台北市:"Taipei",新北市:"NewTaipei",桃園市:"Taoyuan",台中市:"Taichung",台南市:"Tainan",
+                    高雄市:"Kaohsiung",基隆市:"Keelung",新竹市:"Hsinchu",新竹縣:"HsinchuCounty",苗壢縣:"MiaoliCounty",
+                    彰化縣:"ChanghuaCounty",南投縣:"NantouCounty",雲林縣:"YunlinCounty",嘉義縣:"ChiayiCounty",嘉義市:"Chiayi",
+                    屏東縣:"PingtungCounty",宜蘭縣:"YilanCounty",花蓮縣:"HualienCounty",台東縣:"TaitungCounty",金門縣:"KinmenCounty",
+                    澎湖縣:"PenghuCounty",連江縣:"LienchiangCounty",
+                };
+                let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/",
+                    subTarget="?%24format=JSON",
+                    // subTarget="?%24top=30&%24format=JSON",
+                    serachType="",city="";
+                Object.entries(e).forEach((item)=>{
+                    let [k,v]=item;
+                    switch(k){
+                        case "類別" :
+                            serachType=toEng[v];
+                            break;
+                        case "地區" :
+                            city=toEng[v];
+                            break;
+                        case "searchText" :
+                            if(v==''){
+                                break;
+                            };
+                        default:
+                            subTarget += "&%24" + k + "=" + v;
+                    };
+                });
+            let url=baseTarget + serachType + '/' + city +  subTarget;
+            return url;
+            },
         //----------------------------
-        // 網址處理閜關
+        // 網址處理相關
         get_pageTarget_data(){
-            let reAry=new Array,
+            let reAry=[],
                 url = location.href,
                 temp;
-                url=url.split("#")[0];
-            if(url.indexOf('?')!=-1){
+                console.log("url=",url);
+                url=url.split("#")[0];      // ??
+            if(url.indexOf('?')!=-1){       //可重整 用字首轉大寫處理法 另外先拆為k-v並移位
                  let urlData = url.split('?')[1].split('&');
                 for(i=0;i<=urlData.length-1;i++){
                     if(urlData[i].split('=')[0] == 'kind'){
@@ -248,7 +241,7 @@ const App=Vue.createApp({
             };  //if(url.indexOf('?')!=-1)
             return reAry;
         },
-        get_pageTarget_url(){
+        get_pageTarget_url(){       
             let data=this.get_pageTarget_data();
             console.log(data);
             // let temp1="https://ptx.transportdata.tw/MOTC/v2/Tourism/Restaurant?%24top=2&%24format=JSON";
@@ -260,65 +253,56 @@ const App=Vue.createApp({
             temp2="?%24format=JSON&%24";
             let temp3='filter='+idName+"%20eq%20'"+id+"'";
             url=temp1+kind+temp2+temp3;
-            console.log(url);
+            // console.log(url);
             return url;
             // this.target_url=temp1+target_kind+temp2+targetID
         },
         ad_search_url(positionData,kind=this.detail_type,filter,page=0,number=5,radius=10000){
             console.log("hi near_serch_url",page,number,positionData);
             let temp1="https://ptx.transportdata.tw/MOTC/v2/Tourism/";
+            // 可能要換成
+            // https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot
             // let kind=this.detail_type;
             let spatialFilter='nearby(Position' + ',' + positionData.PositionLat + ',' + positionData.PositionLon + ',' + radius + ')';
             let topp=number;
             let skip=page*number;
             let filter2='$'+filter;
-            console.log(kind);
             let select1="";
             switch (kind){
                 case "Activity":
-                    select1="$select=ActivityID,ActivityName,Class1,Class2,Class3,";
+                    select1="$select=ActivityID,ActivityName,Class1,Class2,Class3,City,Picture";
                     break;
                 case "Hotel":
-                    select1="$select=HotelID,HotelName,Class,";
+                    select1="$select=HotelID,HotelName,Class,City,Picture";
                     break;
-                case "Reataurant":
-                    select1="$select=ReataurantID,ReataurantName,Class1,Class2,Class3,";
+                case "Restaurant":
+                    // select1=""
+                    select1="$select=RestaurantID,RestaurantName,City,Picture";
                     break;
                 case "ScenicSpot":
-                    select1="$select=ScenicSpotID,ScenicSpotName,Class1,Class2,Class3,";
+                    // select1=""
+                    select1="$select=ScenicSpotID,ScenicSpotName,Class1,Class2,Class3,City,Picture";
                     break;
-
                 default:
+                    console.log("搜尋類型錯誤")
                     break;
-                
-                
             }
-            let select2="City,Picture";
-            // let select="$select=City,Picture";
-            let temp2='?'+ select1 + select2 + '&%24'+'spatialFilter=' + spatialFilter + '&%24' +filter2+  '&%24' + 'top=' + topp + '&%24' + 'skip='+ skip + "&%24format=JSON&%24";
+            let temp2='?'+ select1 + '&%24'+'spatialFilter=' + spatialFilter + '&%24' +filter2+  '&%24' + 'top=' + topp + '&%24' + 'skip='+ skip + "&%24format=JSON&%24";
             let url=temp1+kind+temp2;
             console.log('url='+url);
             return url;
 
         },
-        // search_Target(){
-            
-        // },
+
         //--------------------------------
-        // 詳細介紹相關
-        getDivHeight(id) {
-            let e = document.getElementById(id);
-            console.log(e);
-            return e.clientHeight;
-        },
+        // 詳細介紹顯示相關
+
         showDetailButtom(){
             // console.log('DH=');
             let lineH = parseInt(window.getComputedStyle(document.documentElement)["fontSize"]);
             let DH = this.getDivHeight('detail');
             if(DH/lineH > 6){
-                // console.log('33333')
                 document.querySelector('#detail-buttom').style.display='block';
-                // document.getElementById('detail').setAttribute('class','end-hide')
             };
             
             console.log('lineH='+lineH);
@@ -327,6 +311,12 @@ const App=Vue.createApp({
             console.log(DH/lineH);
 
         },
+            getDivHeight(id) {   // 待測試 應該能向上整合
+                let e = document.getElementById(id);
+                console.log(e);
+                return e.clientHeight;
+            },
+
         openDetail(){
             let e =document.querySelector("#detail");
             this.detail_open=!this.detail_open;
@@ -349,7 +339,7 @@ const App=Vue.createApp({
                 this.city=data.City;
             };
             let typeName=['ScenicSpotName','HotelName','RestaurantName','ActivityName'];
-            typeName.forEach((name)=>{
+            typeName.forEach((name)=>{      //???
                 if(!data[name]){
                     this.spot_data[name]="";
                 };
@@ -394,6 +384,7 @@ const App=Vue.createApp({
                         // console.log(this.Position);
                         let n_near=n,kind_near=this.toEng[ADType];
                         let AdUrl_near=this.ad_search_url(this.spot_data.Position,kind_near);
+                        console.log("***AdUrl_near=",AdUrl_near)
                         axios.get(AdUrl_near).
                         then(response=>{
                             // console.log(response);
@@ -518,7 +509,7 @@ const App=Vue.createApp({
         },
     },
     mounted(){
-        let e = document.getElementById('detail');
+        let e = document.getElementById('detail');  //??
             // this.detail_open=!this.detail_open;
         
     }
