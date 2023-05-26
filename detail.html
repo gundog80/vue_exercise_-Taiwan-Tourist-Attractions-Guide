@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -141,7 +141,8 @@
                     </div>
                 </div>
                 <template v-for="(item,key) in spot_list_menu2[detail_type]">   <!-- 其它 -->
-                    <div v-if="spot_data[key] && key=='Remarks'" class="row ">     <!-- 注意事項 判斷方式需修正-->
+                    <!-- 注意事項 判斷方式需修正-->
+                    <!-- <div v-if="spot_data[key] && key=='Remarks'" class="row ">    
                         <div class="col-2">
                             <h4 class="">{{item}}</h4>
                         </div>
@@ -149,9 +150,10 @@
                             <p :id=key class="">{{spot_data[key]}}
                             </p>
                         </div>
-                    </div>
-                    <div class="row" v-if="spot_data[key] && key!='Remarks' " >    <!--其它欄位 判斷方式需修正-->
-                    <!-- <div class="row" v-if="spot_data[key] && (key==Spec || key==ServinceInfo)" > -->
+                    </div> -->
+                    
+                    <!--其它欄位 判斷方式需修正-->
+                    <!-- <div class="row" v-if="spot_data[key] && key!='Remarks' " >   
                         <div class="col-2">
                             <h4 class="">{{item}}</h4>
                         </div>
@@ -161,8 +163,26 @@
                                     class="col-5 m-1">{{i}}</li>
                             </ul>
                         </div>
-                    </div>
+                    </div> -->
 
+                    <!-- 修正 -->
+                    <div v-if="spot_data[key]" class="row ">    
+                        <div class="col-2">
+                            <h4 class="">{{item}}</h4>
+                        </div>
+                        <div v-if="['Remarks'].includes(key)" 
+                            class="col-10 overflow-hidden end-hide-parent">
+                            <p :id=key class="end-hide">{{spot_data[key]}}
+                            </p>
+                        </div>
+                        <div class="col-10 p-3 "
+                            v-if="['Spec','ServiceInfo','Phone'].includes(key)" >
+                            <ul class="d-flex flex-wrap " >
+                                <li v-for="(i,k) in data_to_array(spot_data[key],';')" v-show="i!=''" 
+                                    class="col-5 m-1">{{i}}</li>
+                            </ul>
+                        </div>
+                    </div>
                 </template>    
             </div>                
             <aside class="col-4">       <!-- aside -->

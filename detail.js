@@ -105,17 +105,7 @@ const App=Vue.createApp({
                 "UpdateTime":"2022-03-31T02:34:30+08:00",
                 "area":"台南市",
             },
-            aside_ad:[],  //推論無用 測試後刪除
-            aside_ad1:[{    //推論無用 測試後刪除
-                title:"ad title",
-                data:{
-                    'name':'ppp',
-                    'class1':'aaa',
-                    'Picture':{PictureUrl1:"https://taiwan.taiwanstay.net.tw/twpic/15545.jpg"},
-                    'city':"新北市"
-                },
-            }],
-
+            aside_ad:[],  //ad資料放置
         }
     },
     methods:{
@@ -133,30 +123,36 @@ const App=Vue.createApp({
 
         // get_search:function(e){
         get_search(e){      //需更正 改到搜尋頁面處理 此處僅傳遞基訊即可
-            if(!e.searchType){
-                e.searchType='searchBar';
-            };
-            if(!e.page){
-                e.page=1;
-            };
+            console.log("e=",e);  //{地區: '新竹市', 類別: '景點', searchText: '一二三'}
+            let url="./searchPG.html"
+            let area=e.地區, type=e.類別, searchText=e.searchText ;
+            url=url+"?area="+area+"&type="+type+"&searchText="+searchText;
+            console.log("serachUrl=",url)
+            window.open(url);
+            // if(!e.searchType){
+            //     e.searchType='searchBar';
+            // };
+            // if(!e.page){
+            //     e.page=1;
+            // };
+            // // console.log(e);
+            // console.log('父項：');
             // console.log(e);
-            console.log('父項：');
-            console.log(e);
-            let searchType=e.searchType,
-            pageQ=10, url;
-            e.top=pageQ;
-            e.skip=pageQ*(e.page-1);
-            delete e.searchType;          
-            delete e.page; 
-            console.log(e);
-            switch(searchType){
-                case 'searchBar':
-                    url=this.get_url_searchBar(e);
-                    break;
-                default:
-                    console.log('searchType error');
-                    break;
-            };
+            // let searchType=e.searchType,
+            // pageQ=10, url;
+            // e.top=pageQ;
+            // e.skip=pageQ*(e.page-1);
+            // delete e.searchType;          
+            // delete e.page; 
+            // console.log(e);
+            // switch(searchType){
+            //     case 'searchBar':
+            //         url=this.get_url_searchBar(e);
+            //         break;
+            //     default:
+            //         console.log('searchType error');
+            //         break;
+            // };
             // let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/Kaohsiung?%24top=30&%24format=JSON";
             // console.log('url=' + url);
 
@@ -202,33 +198,39 @@ const App=Vue.createApp({
                 url = location.href,
                 temp;
                 console.log("url=",url);
-                url=url.split("#")[0];      // ??
-            if(url.indexOf('?')!=-1){       //可重整 用字首轉大寫處理法 另外先拆為k-v並移位
+                // url=url.split("#")[0];      // ??
+            if(url.indexOf('?')!=-1){       //可重整 用字首轉大寫處理法(已處理 待測試) 另外先拆為k-v並移位
                  let urlData = url.split('?')[1].split('&');
-                for(i=0;i<=urlData.length-1;i++){
+                for(i=0;i<urlData.length;i++){
                     if(urlData[i].split('=')[0] == 'kind'){
                         reAry.push(urlData[i].split('=')[1]) ;
                         switch(reAry[0]){
                             case 'scenicspot':
-                                reAry.push('ScenicSpotID');
+                                reAry[0]='ScenicSpot';
+                                // reAry.push('ScenicSpotID');
                                 this.detail_type='ScenicSpot';
                             break;
-                            case 'restaurant':
-                                reAry.push('RestaurantID');
-                                this.detail_type='Restaurant';
-                                break;
-                            case 'hotel':
-                                reAry.push('HotelID');
-                                this.detail_type='Hotel';
-                                break;
-                            case 'activity':
-                                reAry.push('ActivityID');
-                                this.detail_type='Activity';
-                                break;
+                            // case 'restaurant':
+                            //     reAry[0]='Restaurant';
+                            //     reAry.push('RestaurantID');
+                            //     this.detail_type='Restaurant';
+                            //     break;
+                            //     case 'hotel':
+                            //     reAry[0]='Hotel';
+                            //     reAry.push('HotelID');
+                            //     this.detail_type='Hotel';
+                            //     break;
+                            // case 'activity':
+                            //     reAry[0]='Activity';
+                            //     reAry.push('ActivityID');
+                            //     this.detail_type='Activity';
+                            //     break;
                             default:
-                                console.log('請洽維護人員')
+                                reAry[0]=reAry[0][0].toUpperCase() + reAry[0].slice(1);    
+                                this.detail_type=reAry[0];
                                 break;
                         }
+                        reAry.push(reAry[0]+'ID')
                     };
                     
                     if(urlData[i].split('=')[0] == 'id'){
@@ -250,8 +252,9 @@ const App=Vue.createApp({
             let kind=data[0],
                 idName=data[1],
                 id=data[2],
-            temp2="?%24format=JSON&%24";
-            let temp3='filter='+idName+"%20eq%20'"+id+"'";
+            temp2='?%24filter='+idName+"%20eq%20'"+id+"'";
+            temp3="&%24top=30&%24format=JSON";
+            // let temp3='filter='+idName+"%20eq%20'"+id+"'";
             url=temp1+kind+temp2+temp3;
             // console.log(url);
             return url;
@@ -509,7 +512,7 @@ const App=Vue.createApp({
         },
     },
     mounted(){
-        let e = document.getElementById('detail');  //??
+        // let e = document.getElementById('detail');  //??
             // this.detail_open=!this.detail_open;
         
     }
