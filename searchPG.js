@@ -232,6 +232,7 @@ const App=Vue.createApp({
     },
     created(){
         this.searchD=this.getUrlData();
+        console.log(this.searchD)
         // let pageTargetUrl=this.getPageTargetUrl(this.searchD);
         
         // axios.get(pageTargetUrl).
@@ -263,9 +264,8 @@ const App=Vue.createApp({
     }
 })
 App.component('search_bar',{
-    
-    data(){
-        return{
+    props:['search-data','eng-to-ch'],
+    data(){return{
             search_bar:{
                 selection:{
                     地區:{name:"地區",data:["台北市","新北市","桃園市","台中市","台南市","高雄市","基隆市","新竹市","新竹縣","苗壢縣","彰化縣","南投縣","雲林縣","嘉義縣","嘉義市","屏東縣","宜蘭縣","花蓮縣","台東縣","金門縣","澎湖縣","連江縣",]
@@ -276,9 +276,8 @@ App.component('search_bar',{
                 area:"",
                 type:"",
             },
-        }
-    },
-    props:['search-data','eng-to-ch'],
+    }},
+   
     methods:{
         return_searchData:function(){
             let temp= Object.values(this.search_bar.selection);
@@ -327,6 +326,76 @@ App.component('search_bar',{
             this.search_bar.selection.類別.value=this.engToCh[this.searchData.type];
             this.search_bar.searchText=this.searchData.searchText;
         };
+    },
+});
+App.component('page_banner',{
+    
+    props:['city'],
+    data(){return{
+        bannerSearch:"",
+        bannerUrl:"",
+    }},
+    methods:{
+        // Math.floor((Math.random()*10)+1);
+        getBannerSearchUrl(){
+            appHome="https://tdx.transportdata.tw/api/basic/v2/Tourism/",
+            type="ScenicSpot",city=this.city,
+            selectPic="?%24Select=Picture&%24top=100"
+            
+            // randTarget="&%24skip="+Math.floor(Math.random()*100+1);
+            // textFilter="?%24filter=contains%28"+type+"Name%2C%20%27"+pgt.searchText+"%27%29",
+            // pageFilter="&%24top="+pageQuantity+"&%24skip="+page*pageQuantity,
+            dataType="&%24format=JSON";
+            bannerSearchUrl=appHome+type+"/"+city+selectPic+dataType;
+            
+            this.bannerUrl=bannerSearchUrl; //測試用 需刪
+            // console.log("type=",type)
+            // console.log("city=",city)
+            // console.log("bannerUrl=",bannerUrl);
+            // this.setSpotNameAttr(type);
+            return bannerSearchUrl;
+        },
+
+    },
+    template:
+    // <div>here is banner</div>
+    `
+    <div class="w-100 d-flex align-items-center">
+    <img :src="bannerUrl"   alt="" class="w-100">
+    </div>
+    `,
+    created(){
+        let bannerSearchUrl=this.getBannerSearchUrl();
+        axios.get(bannerSearchUrl).
+        then(response=>{
+            // console.log("resp=",response.data);
+            return response.data;
+        }).
+        then(dataList=>{
+            function tryPic(dataList){
+                let length=dataList.length;
+                // console.log(dataList[Math.floor(Math.random()*length)]);
+                let url=dataList[Math.floor(Math.random()*length)].Picture.PictureUrl1;
+                console.log("Purl=",url);
+                if(url && url!=""){
+                    return url;
+                }else{return ""}
+            };
+            console.log(dataList[0].Picture.PictureUrl1);
+            let picUrl,i=0;
+            do{
+                picUrl=tryPic(dataList);
+                i++;
+                // console.log("picUrl=",picUrl)
+            }while(picUrl=="" && i<9);
+            
+            return picUrl;
+            
+        }).
+        then(url=>{
+            this.bannerUrl=url;
+            console.log(this.bannerUrl);
+        })
     },
 })
 App.mount('#App');

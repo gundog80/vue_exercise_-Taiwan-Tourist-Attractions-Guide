@@ -24,7 +24,7 @@
             <search_bar class="col-8"
             @emit_e="get_search" :search-data="searchD" :eng-to-ch="toCh"></search_bar>
         </div>
-        <div class="banner row justify-content-center"><div class="col-auto">banner</div></div>
+        <div class="banner row justify-content-center"><page_banner class="banner col-auto" :city="searchD.area"></page_banner></div>
 
         <div class="row justify-content-center">
             <div id="typeTagGroup" class="typeTagGroup col-5 d-flex justify-content-between">
