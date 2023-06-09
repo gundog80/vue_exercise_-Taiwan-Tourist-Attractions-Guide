@@ -121,7 +121,7 @@ const App=Vue.createApp({
             appHome="https://tdx.transportdata.tw/api/basic/v2/Tourism/",
             type=pgt.type,city=pgt.area,
             textFilter="?%24filter=contains%28"+type+"Name%2C%20%27"+pgt.searchText+"%27%29",
-            pageFilter="&%24top="+pageQuantity+"&%24slip="+page*pageQuantity,
+            pageFilter="&%24top="+pageQuantity+"&%24skip="+(page-1)*pageQuantity,
             dataType="&%24format=JSON";
             let pageTargetUrl=appHome+type+"/"+city+textFilter+pageFilter+dataType;
             console.log("type=",type)
@@ -130,9 +130,9 @@ const App=Vue.createApp({
             this.setSpotNameAttr(type);
             return pageTargetUrl
         },
-         setSpotNameAttr(type){
+          setSpotNameAttr(type){
             this.spotNameAttr=type+"Name";
-         },
+          },
         get_search(e){      //需更正 改到搜尋頁面處理 此處僅傳遞基訊即可
             console.log("e=",e);  //{地區: '新竹市', 類別: '景點', searchText: '一二三'}
             let url="./searchPG.html"
@@ -232,9 +232,14 @@ const App=Vue.createApp({
     },
     created(){
         this.searchD=this.getUrlData();
+        //  ↓↓↓測試用暫關  
+        // this.mainSearch(this.searchD);
+        // ↑↑↑測試用暫關
+
+
+        //已建立mainSearch代替
         // let pageTargetUrl=this.getPageTargetUrl(this.searchD);
-        
-        // axios.get(pageTargetUrl).
+        // axios.get(pageTargetUrl).  
         //     then(response=>{
         //         return response.data;
         //     }).
@@ -255,6 +260,7 @@ const App=Vue.createApp({
         //         this.mainData=response;
                 
         //     })
+        
             
     },
     mounted(){
@@ -328,5 +334,70 @@ App.component('search_bar',{
             this.search_bar.searchText=this.searchData.searchText;
         };
     },
+})
+App.component('banner',{
+    props:['mainCity','eng-to-ch'],
+    data(){
+        return{
+            area:"",
+            bannerUrl:"",
+        }
+    },
+    methods:{
+        sayhi(){
+            console.log("hi, isbanner")
+        },
+        getBannerUrl(mainCity){
+            //https://tdx.transportdata.tw/api/basic/v2/Tourism/{{type}}/{{city}}
+            // 'https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot/Taipei?%24filter=contains%28ScenicSpotName%2C%20%27%E6%B9%96%27%29&%24top=30&%24format=JSON'
+            // https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot?%24select=Picture&%24top=30&%24format=JSON
+            
+            let 
+            appHome="https://tdx.transportdata.tw/api/basic/v2/Tourism/",
+            type="ScenicSpot",city=mainCity,
+            select="%24select=Picture,"
+            // randNumber=Math.floor(500*Math.random()),
+            // skip="%24top="+10+"&%24skip="+randNumber,
+            // textFilter="?%24filter=contains%28"+type+"Name%2C%20%27"+pgt.searchText+"%27%29",
+            // pageFilter="&%24top="+pageQuantity+"&%24slip="+page*pageQuantity,
+            dataType="&%24format=JSON";
+            let banUrl=appHome+type+"/"+city+"?"+select+dataType;
+            // console.log("type=",type)
+            // console.log("city=",city)
+            console.log("banUrl=",banUrl);
+            // this.setSpotNameAttr(type);
+            return banUrl;
+        },
+    },
+    created(){
+        this.sayhi();
+        this.area=this.engToCh[this.mainCity];
+        let banUrl=this.getBannerUrl(this.mainCity);
+        axios.get(banUrl).
+        then(response=>{
+            return response.data
+        }).
+        then(data=>{
+            function lottery(arr,max,turn){
+                rand=Math.floor(max*Math.random());
+                
+                if(data[rand] && data[rand]!=""){
+                    this.bannerUrl=response.data[rand];
+                }else if(turn<3){
+                    turn++;
+                    console.lot("banner搜尋"+turn);
+                    lottery(arr,max,turn)
+                };
+            };
+            let max=data.length,turn=0;
+            lottery(data,max,turn);
+
+        })
+    },
+    mounted(){
+        
+    },
+    // template:"<p class='bbb'>banner,aaabbb</p>",
+    template:"#banner",
 })
 App.mount('#App');

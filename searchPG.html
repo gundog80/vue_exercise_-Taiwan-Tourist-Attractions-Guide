@@ -22,9 +22,12 @@
             <h1 class="d-none col-0">search page</h1>  <!-- 填入景點名稱 -->
             <div class="col-3 logo"> <div>THE</div> <i class="twicon-main-island"></i></div>
             <search_bar class="col-8"
-            @emit_e="get_search" :search-data="searchD" :eng-to-ch="toCh"></search_bar>
+            @emit_e="get_search" :search-data="area" :eng-to-ch="toCh"></search_bar>
         </div>
-        <div class="banner row justify-content-center"><div class="col-auto">banner</div></div>
+        <div class="banner row justify-content-center">
+            <banner class="w-100" :main-city="searchD.area" :eng-to-ch="toCh">#banner</banner>
+        </div>
+
 
         <div class="row justify-content-center">
             <div id="typeTagGroup" class="typeTagGroup col-5 d-flex justify-content-between">
@@ -56,6 +59,13 @@
         </ul>
     </div>
 </div></body>
+<script type="text/x-template" id="banner">
+    <div class="imgbox banner-box">
+        <img src="https://khh.travel/image/1453/640x480" class="d-block w-100" :alt="key">
+        <p class="center-text">{{mainCity}}</p>
+    </div>
+</script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="./searchPG.js"></script>
+
 </html>

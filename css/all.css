@@ -89,11 +89,25 @@ h4{
   height:250px;
 }
 .imgbox{
+  position:initial;
   display:flex;
   align-items: center;
+  justify-content: center;
   height: 0;
   padding-bottom: 35%;
   padding-top:35%;
+}
+.banner-box{
+  padding-bottom: 10%;
+  padding-top:10%;
+  overflow-y:hidden;
+}
+.imgbox>.center-text{
+  font-size: 3rem;
+  color:rgba(66,66,66,.8);
+  z-index: 3;
+  position: absolute;
+  font-weight: 800;
 }
 .square_img{
   position: relative;
