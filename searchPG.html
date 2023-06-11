@@ -36,33 +36,42 @@
         </div>
     </header>
     <div class="main container">
-        <div class="search-title"></div>
-        <ul class="searchList row d-flex flex-wrap">
-            <!-- <searchCard></searchCard> -->
-            <li class="searchResultCard col-3"
-            v-for="(spot,key) of mainData">
-                <a :href="spot.url">
-                    <img :src="spot.Picture.PictureUrl1" alt="景點圖片">
-                </a>
-                <div class="synopsis">
-                    <h5>{{spot[spotNameAttr].substr(0,9)}}</h5>
-                    <div class="cityTag">{{spot.City}}</div>
-                    <!-- <p v-if="spot.DescriptionDetail">{{spot.DescriptionDetail.substr(0,34)}}...</p> -->
-                    <p v-if="spot.Description">{{spot.Description.substr(0,34)}}...</p>
-                    <div class="classList">
-                       <template v-for="(cs,key) of classList">
-                           <div class="classTag" v-if="spot[cs]">{{spot[cs]}}</div>
-                       </template>
+        <!-- <mainSearch > -->
+            <div class="search-title">
+                當前搜尋到{{searchStatistical.total}}<span v-if="searchStatistical.isEnd==true">+</span>筆資料
+            </div>
+            <ul class="searchList row d-flex flex-wrap">
+                <!-- <searchCard></searchCard> -->
+                <li class="searchResultCard col-3"
+                v-for="(spot,key) of mainData">
+                    <a :href="spot.url">
+                        <img :src="spot.Picture.PictureUrl1" alt="景點圖片">
+                    </a>
+                    <div class="synopsis">
+                        <h5>{{spot[spotNameAttr].substr(0,9)}}</h5>
+                        <div class="cityTag">{{spot.City}}</div>
+                        <!-- <p v-if="spot.DescriptionDetail">{{spot.DescriptionDetail.substr(0,34)}}...</p> -->
+                        <p v-if="spot.Description">{{spot.Description.substr(0,34)}}...</p>
+                        <div class="classList">
+                           <template v-for="(cs,key) of classList">
+                               <div class="classTag" v-if="spot[cs]">{{spot[cs]}}</div>
+                           </template>
+                        </div>
                     </div>
-                </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+            <ul class="pages row d-flex">
+                <li> < </li>
+                <li v-for="i in searchStatistical.maxPage">i</li>
+                <li> > </li>
+            </ul>
+        <!-- </mainSearch> -->
     </div>
 </div></body>
 <script type="text/x-template" id="banner">
     <div class="imgbox banner-box">
-        <img src="https://khh.travel/image/1453/640x480" class="d-block w-100" :alt="key">
-        <p class="center-text">{{mainCity}}</p>
+        <img :src=bannerUrl class="d-block w-100" :alt="key">
+        <p class="center-text">{{area}}</p>
     </div>
 </script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
