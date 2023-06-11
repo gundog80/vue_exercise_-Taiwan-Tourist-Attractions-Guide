@@ -89,11 +89,22 @@ h4{
   height:250px;
 }
 .imgbox{
+  position:initial;
   display:flex;
   align-items: center;
+  justify-content: center;
   height: 0;
   padding-bottom: 35%;
   padding-top:35%;
+}
+
+.imgbox>.center-text{
+  font-size: 3rem;
+  color:rgba(66,66,66,.8);
+  z-index: 3;
+  position: absolute;
+  font-weight: 800;
+  text-shadow:0 0 5px #ff0
 }
 .square_img{
   position: relative;

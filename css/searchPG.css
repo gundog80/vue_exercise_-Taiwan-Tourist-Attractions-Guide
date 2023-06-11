@@ -52,9 +52,15 @@
     color:black
 } 
 .banner{
-    height:6rem;
+    position:static;
+    /* height:6rem; */
     overflow:hidden
 }
+.banner-box{
+    padding-bottom: 10%;
+    padding-top:10%;
+    overflow-y:hidden;
+  }
 .banner img{
     width:100%;
 }

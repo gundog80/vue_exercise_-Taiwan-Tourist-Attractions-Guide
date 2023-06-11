@@ -1,7 +1,12 @@
 const App=Vue.createApp({
     data(){
         return{
-            searchD:"test",
+            searchD:{},
+            searchStatistical:{
+                total:0,
+                maxPage:0,
+                isEnd:false
+            },
             mainData:[],
             classList:["Class","Class1","Class2","Class3"],
             typeList:["活動","景點","住宿","美食"],
@@ -110,7 +115,7 @@ const App=Vue.createApp({
             return reObj;
         },
         getPageTargetUrl(pgt){
-            if(!pgt.page){
+            if(!pgt.page || pgt.page==0){
                 page=1;
                 this.searchD.page=1;
             }else{page=pgt.page};
@@ -121,7 +126,7 @@ const App=Vue.createApp({
             appHome="https://tdx.transportdata.tw/api/basic/v2/Tourism/",
             type=pgt.type,city=pgt.area,
             textFilter="?%24filter=contains%28"+type+"Name%2C%20%27"+pgt.searchText+"%27%29",
-            pageFilter="&%24top="+pageQuantity+"&%24slip="+page*pageQuantity,
+            pageFilter="&%24top="+(pageQuantity+1)+"&%24skip="+(page-1)*pageQuantity,
             dataType="&%24format=JSON";
             let pageTargetUrl=appHome+type+"/"+city+textFilter+pageFilter+dataType;
             console.log("type=",type)
@@ -130,44 +135,16 @@ const App=Vue.createApp({
             this.setSpotNameAttr(type);
             return pageTargetUrl
         },
-         setSpotNameAttr(type){
+          setSpotNameAttr(type){
             this.spotNameAttr=type+"Name";
-         },
-        get_search(e){      //需更正 改到搜尋頁面處理 此處僅傳遞基訊即可
+          },
+        get_search(e){      
             console.log("e=",e);  //{地區: '新竹市', 類別: '景點', searchText: '一二三'}
             let url="./searchPG.html"
             let area=this.toEng[e.地區], type=this.toEng[e.類別], searchText=e.searchText ;
             url=url+"?area="+area+"&type="+type+"&searchText="+searchText;
             console.log("serachUrl=",url)
             window.open(url);
-            // if(!e.searchType){
-            //     e.searchType='searchBar';
-            // };
-            // if(!e.page){
-            //     e.page=1;
-            // };
-            // // console.log(e);
-            // console.log('父項：');
-            // console.log(e);
-            // let searchType=e.searchType,
-            // pageQ=10, url;
-            // e.top=pageQ;
-            // e.skip=pageQ*(e.page-1);
-            // delete e.searchType;          
-            // delete e.page; 
-            // console.log(e);
-            // switch(searchType){
-            //     case 'searchBar':
-            //         url=this.get_url_searchBar(e);
-            //         break;
-            //     default:
-            //         console.log('searchType error');
-            //         break;
-            // };
-            // let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/Kaohsiung?%24top=30&%24format=JSON";
-            // console.log('url=' + url);
-
-
         },
         setAction(groupSel,attr,value){
             let group=document.querySelector(groupSel);
@@ -204,8 +181,23 @@ const App=Vue.createApp({
             console.log(pageTargetUrl);
             axios.get(pageTargetUrl).
             then(response=>{
-                console.log("resp=",response.data);
-                return response.data;
+                let data=response.data,pageQuantity=16;
+                let length=data.length;
+                // console.log()
+                console.log(this.searchD.page,this.searchStatistical.maxPage)
+                if(this.searchD.page>this.searchStatistical.maxPage){
+                    this.searchStatistical.total+=length;
+                    this.searchStatistical.maxPage=this.searchD.page
+                };
+                console.log(length,pageQuantity);
+                if(length<pageQuantity){
+                    this.searchStatistical.isEnd=true;
+                }else if(length=pageQuantity){
+                    data.shift();
+                    this.searchStatistical.total-=1;
+                };
+                console.log("resp=",data);
+                return data;
             }).
             then(response=>{
                 // console.log("spotList=",spotList);
@@ -232,30 +224,9 @@ const App=Vue.createApp({
     },
     created(){
         this.searchD=this.getUrlData();
-        console.log(this.searchD)
-        // let pageTargetUrl=this.getPageTargetUrl(this.searchD);
-        
-        // axios.get(pageTargetUrl).
-        //     then(response=>{
-        //         return response.data;
-        //     }).
-        //     then(response=>{
-        //         console.log("this.searchD=",this.searchD)
-        //         function editData(spotList,searchD){
-        //             spotList.forEach(spot=>{
-        //                 if(!spot.City){spot.City=spot.Address.substr(0,2)};
-        //                 console.log("this.searchD=",searchD)
-        //                 spot.url="./detail.html?kind="+searchD.type+"&id="+spot[searchD.type+'ID']
-        //             });
-        //             return spotList;
-        //         };
-        //         return editData(response,this.searchD);
-                
-        //     }).
-        //     then(response=>{
-        //         this.mainData=response;
-                
-        //     })
+        //  ↓↓↓測試用暫關  
+        // this.mainSearch(this.searchD);
+        // ↑↑↑測試用暫關
             
     },
     mounted(){
@@ -398,4 +369,81 @@ App.component('page_banner',{
         })
     },
 })
+App.component('banner',{
+    props:['mainCity','eng-to-ch'],
+    data(){
+        return{
+            area:"",
+            bannerUrl:"1",
+        }
+    },
+    methods:{
+        sayhi(){
+            console.log("hi, isbanner")
+        },
+        getBannerSearchUrl(mainCity){
+            //https://tdx.transportdata.tw/api/basic/v2/Tourism/{{type}}/{{city}}
+            // 'https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot/Taipei?%24filter=contains%28ScenicSpotName%2C%20%27%E6%B9%96%27%29&%24top=30&%24format=JSON'
+            // https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot?%24select=Picture&%24top=30&%24format=JSON
+            
+            let 
+            appHome="https://tdx.transportdata.tw/api/basic/v2/Tourism/",
+            type="ScenicSpot",city=mainCity,
+            select="%24select=Picture"
+            // randNumber=Math.floor(500*Math.random()),
+            top10="&%24top="+10,
+            // textFilter="?%24filter=contains%28"+type+"Name%2C%20%27"+pgt.searchText+"%27%29",
+            // pageFilter="&%24top="+pageQuantity+"&%24slip="+page*pageQuantity,
+            dataType="&%24format=JSON";
+            let banSearchUrl=appHome+type+"/"+city+"?"+select+top10+dataType;
+            // console.log("type=",type)
+            // console.log("city=",city)
+            console.log("banUrlSearch=",banSearchUrl);
+            // this.setSpotNameAttr(type);
+            return banSearchUrl;
+        },
+    },
+    created(){
+        this.sayhi();
+        this.area=this.engToCh[this.mainCity];
+        let banSearchUrl=this.getBannerSearchUrl(this.mainCity);
+        axios.get(banSearchUrl).
+        then(response=>{
+            return response.data
+        }).
+        then(data=>{
+            function lottery(arr,max,turn){
+                rand=Math.floor(max*Math.random());
+                console.log("aaa",data[rand])
+                let bannerUrl;
+                if(data[rand].Picture.PictureUrl1 && data[rand].Picture.PictureUrl1!=""){
+                    // return (data[rand].Picture.PictureUrl1);
+                    bannerUrl=data[rand].Picture.PictureUrl1;
+                    console.log("bbb",data[rand])
+                    // return bannerUrl;
+                }else if(turn<3){
+                    turn++;
+                    console.log("banner搜尋"+turn);
+                    // return lottery(arr,max,turn)
+                    console.log("ccc",turn)
+                    bannerUrl=lottery(arr,max,turn);
+                }else if(turn>=3){
+                    bannerUrl="https://khh.travel/image/1453/640x480";
+                };
+                return bannerUrl;
+            };
+            let max=data.length,turn=0;
+            console.log("data=",data);
+            this.bannerUrl=lottery(data,max,0);
+            console.log(this.bannerUrl)
+
+        })
+    },
+    mounted(){
+        
+    },
+    // template:"<p class='bbb'>banner,aaabbb</p>",
+    template:"#banner",
+})
+
 App.mount('#App');
