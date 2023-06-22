@@ -10,6 +10,7 @@ const App=Vue.createApp({
             mainData:[],
             classList:["Class","Class1","Class2","Class3"],
             typeList:["活動","景點","住宿","美食"],
+            tags:new Set,
             toEng:{
                 活動:"Activity",
                 景點:"ScenicSpot",
@@ -69,6 +70,7 @@ const App=Vue.createApp({
                 LienchiangCounty:"連江縣",
             },
             spotNameAttr:"",
+            classSelect:[],
 
         }
     },
@@ -123,7 +125,10 @@ const App=Vue.createApp({
             // 'https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot/Taipei?%24filter=contains%28ScenicSpotName%2C%20%27%E6%B9%96%27%29&%24top=30&%24format=JSON'
             let 
             pageQuantity=15,
+            // https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot/Taichung?%24filter=contains%28ScenicSpotName%2C%20%27%27%29&%24top=16&%24skip=15&%24format=JSON 
+            // https://tdx.transportdata.tw/api/basic/v2/Tourism/Hotel/Taichung?%24filter=contains%28HotelName%2C%20%27%27%29&%24top=16&%24skip=0&%24format=JSON
             appHome="https://tdx.transportdata.tw/api/basic/v2/Tourism/",
+
             type=pgt.type,city=pgt.area,
             textFilter="?%24filter=contains%28"+type+"Name%2C%20%27"+pgt.searchText+"%27%29",
             pageFilter="&%24top="+(pageQuantity+1)+"&%24skip="+(page-1)*pageQuantity,
@@ -174,53 +179,141 @@ const App=Vue.createApp({
             let newType=e.srcElement.dataset.type;
             this.searchD.type=newType;
             this.setAction("#typeTagGroup","type",this.searchD.type);
+            this.searchD.page=1;
+            this.searchStatistical.maxPage=0
+            this.searchStatistical.total=0;
+            this.searchStatistical.isEnd=false;
             this.mainSearch(this.searchD);
+        },
+        changePage(e){
+            let newPage=e.srcElement.dataset.page;
+            this.searchD.page=newPage;
+            this.mainSearch(this.searchD);
+            let oldAction=document.querySelector("#pageList").querySelector(".action-page");
+            if(oldAction){this.removeClass(oldAction,"action-page")};
+            setTimeout(()=>{
+                let newAction=document.querySelector("#pageList").children[this.searchD.page]
+                this.addClass(newAction,"action-page");
+                // console.log("pagess=",pagess);
+            },500);
+            // let newAction=document.querySelector("#pageList").children[this.searchD.page]
+            // this.addClass(newAction,"action");
         },
         mainSearch(data){
             let pageTargetUrl=this.getPageTargetUrl(data);
             console.log(pageTargetUrl);
             axios.get(pageTargetUrl).
             then(response=>{
+                //頁面及搜尋數量統計
                 let data=response.data,pageQuantity=16;
                 let length=data.length;
+                console.log(this.searchD.page);
+                console.log(this.searchStatistical.maxPage);
                 // console.log()
                 console.log(this.searchD.page,this.searchStatistical.maxPage)
+                if(length<pageQuantity){
+                    this.searchStatistical.isEnd=true;
+                // }else if(length=pageQuantity && this.searchD.page==this.searchStatistical.maxPage){
+                }else if(length=pageQuantity){
+                    data.shift();
+                    length--;
+                    // this.searchStatistical.total-=1;
+                };
                 if(this.searchD.page>this.searchStatistical.maxPage){
                     this.searchStatistical.total+=length;
                     this.searchStatistical.maxPage=this.searchD.page
                 };
                 console.log(length,pageQuantity);
-                if(length<pageQuantity){
-                    this.searchStatistical.isEnd=true;
-                }else if(length=pageQuantity){
-                    data.shift();
-                    this.searchStatistical.total-=1;
-                };
                 console.log("resp=",data);
                 return data;
             }).
             then(response=>{
-                // console.log("spotList=",spotList);
-                // console.log("this.searchD=",this.searchD)
+                //spotData資料修正 city classList
                 function editData(spotList,searchD){
                     spotList.forEach(spot=>{
-                        // console.log("spot=",spot);
+                        // console.log(spot)
+                        {    //spot示意
+                        //"ScenicSpotID": "C1_387000000A_000015",
+                        //     "ScenicSpotName": "台灣氣球博物館",
+                        //     "DescriptionDetail": "2006年大倫氣球參加經濟部觀光工廠產業提升計畫，經過一連串的規劃與改造，整理龐大的歷史資料與老機器，重塑企業識別系統並建立新品牌，還設計了一系列氣球相關的課程與活動，於2008年元月正式對外開放參觀。2009年應臺中市文化局的邀請，加入藝術之店行列，同年十月，並榮獲經濟部工業局第一屆優良觀光工廠的殊榮。2011年10月進一步獲得行政院研考會英語服務標章金質獎。2012年再度榮獲經濟部工業局第四屆優良觀光工廠的殊榮。可愛的波波兔是台灣氣球博物館及大倫氣球工業股份有限公司的吉祥物，常有人問道：為什麼大倫的吉祥物是兔子？在早期，每一家工廠都有屬於自己的動物：老虎、大象、天使等等。大倫氣球當時以「白兔牌」作為品牌的LOGO，一方面是兔子給人矯健的印象，另一方面兔子也給人活潑歡樂的形象，在企業識別系統重整之後，我們不但保留兔子的傳統，同時更將牠化身為品牌的代言人－波波兔，希望可愛的波波兔可以陪伴大小朋友一起度過氣球的歡樂時光。【活動內容】專業導覽 &ndash; 專業的導覽人員帶您了解豐富的氣球知識與應用。手工氣球 &ndash; 提供工具、原料，親自體驗氣球的製作流程。造型氣球 &ndash;  每個季節推出不同的限定造型氣球 DIY 行程氣球遊戲 &ndash; 以氣球為主的趣味競賽，利用各式氣球設計不同類型遊戲；水球遊戲為夏季限定。",
+                        //     "Description": "台灣氣球博物館位於台中市神岡區，於 2008 年成立，以氣球為主題的觀光工廠，保存了老舊廠房的風貌與老機器，述說著臺灣氣球產業的發展故事。除了可認識豐富的氣球產業知識之外，還可以親自體驗手工氣球DIY、造型氣球，運用氣球的創意，一起為大朋友小朋友創造歡樂的回憶！",
+                        //     "Phone": "886-4-25284525",
+                        //     "Address": "臺中市429神岡區大豐路5段505號",
+                        //     "ZipCode": "429",
+                        //     "TravelInfo": "【搭乘台鐵、巴士或豐原客運】豐原火車站下車＞至對面的豐原客運搭乘往神岡方向的路線＞約10分鐘車程至「岸裡國小站」下車＞往回走約200公尺至對面的瑞豐加油站＞大豐路5段進來100公尺 ＞台灣氣球博物館",
+                        //     "OpenTime": "週一至週五 9:00-17:00 (午休時間： 12:30-13:00)    週六、週日休館",
+                        //     "Picture": {
+                        //         "PictureUrl1": "https://travel.taichung.gov.tw/content/images/attractions/50411/640x480_image637714630205363215.png",
+                        //         "PictureDescription1": "宅度假"
+                        //     },
+                        //     "Position": {
+                        //         "PositionLon": 120.69908142089844,
+                        //         "PositionLat": 24.247329711914062,
+                        //         "GeoHash": "wsmcfw46u"
+                        //     },
+                        //     "Class1": "觀光工廠類",
+                        //     "ParkingPosition": {},
+                        //     "City": "臺中市",
+                        //     "SrcUpdateTime": "2023-06-16T01:45:35+08:00",
+                        //     "UpdateTime": "2023-06-16T03:03:59+08:00",
+                        //     "url": "./detail.html?kind=ScenicSpot&id=C1_387000000A_000015" // 
+                        }
+
                         if(!spot.City){spot.City=spot.Address.substr(0,3);
-                        // console.log("spotCity=",spot.City)
                         };
-                        // console.log("this.searchD=",searchD)
-                        spot.url="./detail.html?kind="+searchD.type+"&id="+spot[searchD.type+'ID']
+                        spot.url="./detail.html?kind="+searchD.type+"&id="+spot[searchD.type+'ID'];
+                        let classTags=["Class","Class1","Class2","Class3"],
+                            classList=[];
+                        classTags.forEach(tag=>{
+                            if(spot[tag]){
+                                classList.push(spot[tag]);
+                            }
+                        });
+                        spot.classList=classList;
+
                     });
                     return spotList;
                 };
-                return editData(response,this.searchD);
+                this.mainData=editData(response,this.searchD);
+                return this.mainData;
                 
             }).
             then(response=>{
-                this.mainData=response;
+                //取得類別tags
+                // console.log(response);
+                response.forEach(spot=>{
+                    console.log(spot['classList']);
+                    let tagName=["Class","Class1","Class2","Class3"];
+                    tagName.forEach(Name=>{
+                        if(spot[Name]){
+                            this.tags.add(spot[Name])
+                        }
+                    })
+
+                })
+                // console.log(this.tags)
                 
             })
+        },
+        classTagOnClick(){
+  
+        },
+        isMixed(Arr1,Arr2){
+            console.log(Arr1)
+            if(Arr2.length=0){
+                console.log("AAA");
+                return 1;
+            };
+            if(Arr1.length=0){
+                console.log("BBB");
+                return 0;
+            };
+            Arr1.forEach((cs,Arr2)=>{
+                console.log("CCC");
+                return Arr2.indexOf(cs);
+            })
         }
+
     },
     created(){
         this.searchD=this.getUrlData();
@@ -232,6 +325,7 @@ const App=Vue.createApp({
     mounted(){
         // this.strAction("#typeTagGroup","type",this.searchD.type);
         this.setAction("#typeTagGroup","type",this.searchD.type);
+        this.initClassTag()
     }
 })
 App.component('search_bar',{
@@ -299,76 +393,6 @@ App.component('search_bar',{
         };
     },
 });
-App.component('page_banner',{
-    
-    props:['city'],
-    data(){return{
-        bannerSearch:"",
-        bannerUrl:"",
-    }},
-    methods:{
-        // Math.floor((Math.random()*10)+1);
-        getBannerSearchUrl(){
-            appHome="https://tdx.transportdata.tw/api/basic/v2/Tourism/",
-            type="ScenicSpot",city=this.city,
-            selectPic="?%24Select=Picture&%24top=100"
-            
-            // randTarget="&%24skip="+Math.floor(Math.random()*100+1);
-            // textFilter="?%24filter=contains%28"+type+"Name%2C%20%27"+pgt.searchText+"%27%29",
-            // pageFilter="&%24top="+pageQuantity+"&%24skip="+page*pageQuantity,
-            dataType="&%24format=JSON";
-            bannerSearchUrl=appHome+type+"/"+city+selectPic+dataType;
-            
-            this.bannerUrl=bannerSearchUrl; //測試用 需刪
-            // console.log("type=",type)
-            // console.log("city=",city)
-            // console.log("bannerUrl=",bannerUrl);
-            // this.setSpotNameAttr(type);
-            return bannerSearchUrl;
-        },
-
-    },
-    template:
-    // <div>here is banner</div>
-    `
-    <div class="w-100 d-flex align-items-center">
-    <img :src="bannerUrl"   alt="" class="w-100">
-    </div>
-    `,
-    created(){
-        let bannerSearchUrl=this.getBannerSearchUrl();
-        axios.get(bannerSearchUrl).
-        then(response=>{
-            // console.log("resp=",response.data);
-            return response.data;
-        }).
-        then(dataList=>{
-            function tryPic(dataList){
-                let length=dataList.length;
-                // console.log(dataList[Math.floor(Math.random()*length)]);
-                let url=dataList[Math.floor(Math.random()*length)].Picture.PictureUrl1;
-                console.log("Purl=",url);
-                if(url && url!=""){
-                    return url;
-                }else{return ""}
-            };
-            console.log(dataList[0].Picture.PictureUrl1);
-            let picUrl,i=0;
-            do{
-                picUrl=tryPic(dataList);
-                i++;
-                // console.log("picUrl=",picUrl)
-            }while(picUrl=="" && i<9);
-            
-            return picUrl;
-            
-        }).
-        then(url=>{
-            this.bannerUrl=url;
-            console.log(this.bannerUrl);
-        })
-    },
-})
 App.component('banner',{
     props:['mainCity','eng-to-ch'],
     data(){
@@ -414,12 +438,12 @@ App.component('banner',{
         then(data=>{
             function lottery(arr,max,turn){
                 rand=Math.floor(max*Math.random());
-                console.log("aaa",data[rand])
+                // console.log("aaa",data[rand])
                 let bannerUrl;
                 if(data[rand].Picture.PictureUrl1 && data[rand].Picture.PictureUrl1!=""){
                     // return (data[rand].Picture.PictureUrl1);
                     bannerUrl=data[rand].Picture.PictureUrl1;
-                    console.log("bbb",data[rand])
+                    // console.log("bbb",data[rand])
                     // return bannerUrl;
                 }else if(turn<3){
                     turn++;

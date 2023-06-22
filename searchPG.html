@@ -35,15 +35,25 @@
             </div>
         </div>
     </header>
-    <div class="main container">
+    <div class="main container d-flex flex-column align-items-center">
         <!-- <mainSearch > -->
-            <div class="search-title">
-                當前搜尋到{{searchStatistical.total}}<span v-if="searchStatistical.isEnd==true">+</span>筆資料
+            <div class="mainHead row w-100 justify-content-between align-items-stretch">
+                <div class="searchTotal col-auto">
+                    當前搜尋到{{searchStatistical.total}}<span v-if="searchStatistical.isEnd==false">+</span>筆資料
+                </div>
+                <div class="tags col-auto justify-content-end">
+                    <template v-for="(item,key) in tags">
+                        <input type="checkbox" class="btn-check" :id="'class-tag-'+key" :value="item" autocomplete="off" v-model="classSelect">
+                        <!-- <input type="checkbox" class="btn-check" :id="'class-tag-'+key" autocomplete="off" > -->
+                        <label class="btn btn-outline-primary m-2" :for="'class-tag-'+key" @click="classTagOnClick">{{item}}</label>
+                    </template>
+                    <!-- <div class="tag m-1" v-for="(item,key) in tags">{{item}}</div> -->
+                </div>
+
             </div>
-            <ul class="searchList row d-flex flex-wrap">
-                <!-- <searchCard></searchCard> -->
+            <ul class="searchList row d-flex flex-wrap justify-content-around">
                 <li class="searchResultCard col-3"
-                v-for="(spot,key) of mainData">
+                v-for="(spot,key) of mainData" v-show="isMixed(spot.classList,classSelect)">
                     <a :href="spot.url">
                         <img :src="spot.Picture.PictureUrl1" alt="景點圖片">
                     </a>
@@ -60,10 +70,11 @@
                     </div>
                 </li>
             </ul>
-            <ul class="pages row d-flex">
-                <li> < </li>
-                <li v-for="i in searchStatistical.maxPage">i</li>
-                <li> > </li>
+            <ul id="pageList" class="pages row d-flex flex-row ">
+                <li class="col-1" @click="changePage" :data-page="parseInt(searchD.page)-1"> < </li>
+                <li class="col-1" @click="changePage" v-for="i in parseInt(searchStatistical.maxPage)" :data-page="i">{{i}}</li>
+                <li class="col-1" @click="changePage" v-if="searchStatistical.isEnd==false" :data-page="parseInt(searchStatistical.maxPage)+1">{{parseInt(searchStatistical.maxPage)+1}}</li>
+                <li class="col-1" @click="changePage" :data-page="parseInt(searchD.page)+1"> > </li>
             </ul>
         <!-- </mainSearch> -->
     </div>

@@ -64,3 +64,9 @@
 .banner img{
     width:100%;
 }
+.action-page{
+    font-size: 1.2rem;
+    /* text-shadow:0 0 3px rgb(141, 209, 14); */
+    font-weight: 600;
+    color:rgb(119, 7, 100);
+}
