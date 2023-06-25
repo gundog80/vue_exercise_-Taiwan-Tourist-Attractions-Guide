@@ -70,8 +70,7 @@ const App=Vue.createApp({
                 LienchiangCounty:"連江縣",
             },
             spotNameAttr:"",
-            classSelect:[],
-
+            selectedTags:[],
         }
     },
     methods:{
@@ -176,6 +175,8 @@ const App=Vue.createApp({
             },attr)
         },
         changeType(e){
+            console.log("hi,",this.tags)
+            this.tags.clear();this.selectedTags=[];
             let newType=e.srcElement.dataset.type;
             this.searchD.type=newType;
             this.setAction("#typeTagGroup","type",this.searchD.type);
@@ -227,11 +228,9 @@ const App=Vue.createApp({
                 console.log("resp=",data);
                 return data;
             }).
-            then(response=>{
-                //spotData資料修正 city classList
-                function editData(spotList,searchD){
-                    spotList.forEach(spot=>{
-                        // console.log(spot)
+            then(response=>{  //建立spot.spotLIst
+                function editData(spotList,searchD,classList){
+                    spotList.forEach((spot,index)=>{
                         {    //spot示意
                         //"ScenicSpotID": "C1_387000000A_000015",
                         //     "ScenicSpotName": "台灣氣球博物館",
@@ -262,27 +261,30 @@ const App=Vue.createApp({
                         if(!spot.City){spot.City=spot.Address.substr(0,3);
                         };
                         spot.url="./detail.html?kind="+searchD.type+"&id="+spot[searchD.type+'ID'];
-                        let classTags=["Class","Class1","Class2","Class3"],
-                            classList=[];
-                        classTags.forEach(tag=>{
+                        spot.tagList=[];
+                        // spotList[index].tagList=[];
+                        // console.log("error this is",this.classList);
+                        classList.forEach(tag=>{
                             if(spot[tag]){
-                                classList.push(spot[tag]);
+                                // console.log(spot);
+                                spot.tagList.push(spot[tag]);
                             }
                         });
-                        spot.classList=classList;
-
+                        // spot.isMixed=true;
+                        spot.isMixed=1;
                     });
                     return spotList;
                 };
-                this.mainData=editData(response,this.searchD);
+                // console.log("editData can get ",[this.isMixed,this.classSelect,this.classTags])
+                this.mainData=editData(response,this.searchD,[...this.classList]);
                 return this.mainData;
                 
             }).
-            then(response=>{
+            then(response=>{  //
                 //取得類別tags
                 // console.log(response);
                 response.forEach(spot=>{
-                    console.log(spot['classList']);
+                    console.log(spot['tagList']);
                     let tagName=["Class","Class1","Class2","Class3"];
                     tagName.forEach(Name=>{
                         if(spot[Name]){
@@ -296,22 +298,41 @@ const App=Vue.createApp({
             })
         },
         classTagOnClick(){
-  
+            let chkArr;
+            setTimeout(()=>{
+                this.mainData.forEach(spot=>{
+                    if(this.selectedTags.length==0){
+                        chkArr=[...this.tags];
+                    }else{
+                        chkArr=this.selectedTags;
+                    }
+                    console.log("chkArr=",chkArr);
+                    let isMix=this.isMixed(spot.tagList,chkArr);
+                    console.log(isMix);
+                    spot.isMixed=isMix;
+                })
+            },500)
         },
         isMixed(Arr1,Arr2){
-            console.log(Arr1)
-            if(Arr2.length=0){
-                console.log("AAA");
-                return 1;
+            console.log(Arr1,Arr2);
+            // console.log("isMixed,",...Arr1);
+            if(Arr1.length==0 || Arr2.length==0){
+                // console.log("AAA");
+                return false;
             };
-            if(Arr1.length=0){
-                console.log("BBB");
-                return 0;
-            };
-            Arr1.forEach((cs,Arr2)=>{
-                console.log("CCC");
-                return Arr2.indexOf(cs);
+            // console.log(Arr2)
+            let isMix=false;
+            Arr1.forEach((tg)=>{
+                // console.log("CCC",Arr2);
+                console.log("isMixed?",Arr2,tg);
+                // console.log("CCC",Arr2);
+                let mixed=Arr2.indexOf(tg);
+                if (mixed>=0){
+                    isMix=true;
+                }
+                console.log(isMix);
             })
+            return isMix;
         }
 
     },
@@ -325,7 +346,8 @@ const App=Vue.createApp({
     mounted(){
         // this.strAction("#typeTagGroup","type",this.searchD.type);
         this.setAction("#typeTagGroup","type",this.searchD.type);
-        this.initClassTag()
+        console.log("111111111111111111111111111111111111111111111,",this.classSelect);
+        // this.initClassTag()
     }
 })
 App.component('search_bar',{
@@ -364,25 +386,27 @@ App.component('search_bar',{
         // }
     },
     template:`
-    <form class="d-flex sharebar col-9 mx-auto justify-content-center align-items-stretch ">
-        <div class="select form-floating" v-for="(item, index) in search_bar.selection" >
-            <select  class="form-select form-select-sm"  aria-label="Floating label select example" 
-                :id="item.name"  v-model="item.value">
-                    <option selected>Open this select menu</option>
-                    <option v-for="(item, index) in item.data" :value="item">{{item}}</option>
-                </select>
-            <label :for="item.name">{{item.name}}</label>
-        </div>
-        <div class="form-floating">
-            <input class="form-control" placeholder="Leave a comment here" id="searchTextarea"
-                v-model.trim="search_bar.searchText"
-            > 
-            <label for="searchTextarea">請輸入搜尋內容</label>
-        </div>
-        <btn type="button" class="btn btn-info rounded-none rounded-end d-flex align-items-center"
-            @click="return_searchData">搜尋
-        </btn>
-    </form>
+    <div class="d-none d-lg-block">
+        <form class="d-flex sharebar col-11 mx-auto justify-content-center align-items-stretch ">
+            <div class="select form-floating" v-for="(item, index) in search_bar.selection" >
+                <select  class="form-select form-select-sm"  aria-label="Floating label select example" 
+                    :id="item.name"  v-model="item.value">
+                        <option selected>Open this select menu</option>
+                        <option v-for="(item, index) in item.data" :value="item">{{item}}</option>
+                    </select>
+                <label :for="item.name">{{item.name}}</label>
+            </div>
+            <div class="form-floating">
+                <input class="form-control" placeholder="Leave a comment here" id="searchTextarea"
+                    v-model.trim="search_bar.searchText"
+                > 
+                <label for="searchTextarea">請輸入搜尋內容</label>
+            </div>
+            <btn type="button" class="btn btn-info rounded-none rounded-end d-flex align-items-center"
+                @click="return_searchData">搜尋
+            </btn>
+        </form>
+    </div>
     `,
     mounted(){
         if(this.searchData){

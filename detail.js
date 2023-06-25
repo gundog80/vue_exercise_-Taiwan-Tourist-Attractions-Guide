@@ -534,7 +534,7 @@ App.component('search_bar',{
         }
     },
     methods:{
-        send_search:function(){
+        return_searchData:function(){
             let temp= Object.values(this.search_bar.selection);
             let OPut={};
             temp.forEach(item=>{
@@ -552,11 +552,33 @@ App.component('search_bar',{
         //   this.$emit('emit_e',Oput);
         // }
     },
-    template:`
-    <form class="d-flex sharebar col-auto mx-auto justify-content-center ">
-        <div class="select form-floating" v-for="(item, index) in search_bar.selection">
+    template:
+    // `
+    // <form class="d-flex sharebar col-auto mx-auto justify-content-center ">
+    //     <div class="select form-floating" v-for="(item, index) in search_bar.selection">
+    //         <select  class="form-select form-select-sm"  aria-label="Floating label select example" 
+    //             :id="item.name" :value=item.data[0] v-model="item.value">
+    //                 <option v-for="(item, index) in item.data" :value="item">{{item}}</option>
+    //             </select>
+    //         <label :for="item.name">{{item.name}}</label>
+    //     </div>
+    //     <div class="form-floating">
+    //         <input class="form-control" placeholder="Leave a comment here" id="searchTextarea"
+    //             v-model.trim="search_bar.searchText"
+    //         > 
+    //         <label for="searchTextarea">請輸入搜尋內容</label>
+    //     </div>
+    //     <btn type="button" class="btn btn-info rounded-none rounded-end d-flex align-items-center"
+    //         @click="send_search">搜尋
+    //     </btn>
+    // </form>
+    // `
+    `
+    <form class="d-flex sharebar col-9 mx-auto justify-content-center align-items-stretch ">
+        <div class="select form-floating" v-for="(item, index) in search_bar.selection" >
             <select  class="form-select form-select-sm"  aria-label="Floating label select example" 
-                :id="item.name" :value=item.data[0] v-model="item.value">
+                :id="item.name"  v-model="item.value">
+                    <option selected>Open this select menu</option>
                     <option v-for="(item, index) in item.data" :value="item">{{item}}</option>
                 </select>
             <label :for="item.name">{{item.name}}</label>
@@ -568,9 +590,10 @@ App.component('search_bar',{
             <label for="searchTextarea">請輸入搜尋內容</label>
         </div>
         <btn type="button" class="btn btn-info rounded-none rounded-end d-flex align-items-center"
-            @click="send_search">搜尋
+            @click="return_searchData">搜尋
         </btn>
     </form>
-    `,
+    `
+    ,
 })
 App.mount('#App');

@@ -16,21 +16,23 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
     <title>The Taiwan</title>
 </head>
-<body><div id="App">
-    <header class="container header text-center">
-        <div class="row align-items-stretch">
-            <h1 class="d-none col-0">search page</h1>  <!-- 填入景點名稱 -->
-            <div class="col-3 logo"> <div>THE</div> <i class="twicon-main-island"></i></div>
-            <search_bar class="col-8"
-            @emit_e="get_search" :search-data="area" :eng-to-ch="toCh"></search_bar>
+<body class="mb-5"><div id="App">
+    <!-- <header class="container header d-flex flex-column"> -->
+    <header class="container header  flex-column">
+        <h1 class="row d-none">search page</h1>  
+        <div class="row align-items-stretch justify-content-start mb-3">
+            <div class="col-5 col-lg-2 logo justify-content-start"> <div>THE</div> <i class="twicon-main-island"></i></div>
+            <search_bar class="col-7"
+            @emit_e="get_search" :search-data="searchD" :eng-to-ch="toCh"></search_bar>
+            <div class="col-2 d-lg-none offset-5 d-flex align-items-stretch justify-content-end" style="background-color: aqua;">
+                <button>搜</button>
+            </div>
         </div>
         <div class="banner row justify-content-center">
             <banner class="w-100" :main-city="searchD.area" :eng-to-ch="toCh">#banner</banner>
         </div>
-
-
         <div class="row justify-content-center">
-            <div id="typeTagGroup" class="typeTagGroup col-5 d-flex justify-content-between">
+            <div id="typeTagGroup" class="typeTagGroup col-10 col-lg-5 d-flex justify-content-between">
                 <div class="typeTag col-auto" v-for="(tag,key) of typeList" :data-type=toEng[tag] v-on:click="changeType">{{tag}}</div>
             </div>
         </div>
@@ -41,30 +43,32 @@
                 <div class="searchTotal col-auto">
                     當前搜尋到{{searchStatistical.total}}<span v-if="searchStatistical.isEnd==false">+</span>筆資料
                 </div>
-                <div class="tags col-auto justify-content-end">
+                <div class="tags d-none d-lg-break col-auto justify-content-end">
                     <template v-for="(item,key) in tags">
-                        <input type="checkbox" class="btn-check" :id="'class-tag-'+key" :value="item" autocomplete="off" v-model="classSelect">
-                        <!-- <input type="checkbox" class="btn-check" :id="'class-tag-'+key" autocomplete="off" > -->
+                        <input type="checkbox" class="btn-check" :id="'class-tag-'+key" :value="item" autocomplete="off" v-model="selectedTags">
                         <label class="btn btn-outline-primary m-2" :for="'class-tag-'+key" @click="classTagOnClick">{{item}}</label>
                     </template>
-                    <!-- <div class="tag m-1" v-for="(item,key) in tags">{{item}}</div> -->
                 </div>
 
             </div>
             <ul class="searchList row d-flex flex-wrap justify-content-around">
-                <li class="searchResultCard col-3"
-                v-for="(spot,key) of mainData" v-show="isMixed(spot.classList,classSelect)">
+                <!-- <li class="searchResultCard col-3"     v-for="(spot,key) of mainData" v-show="isMixed(spot.classList,classSelect)"> -->
+                <li class="searchResultCard"
+                  v-for="(spot,key) of mainData"  v-show="spot.isMixed==true">
+                <!-- {{spot.classlist}} -->
                     <a :href="spot.url">
                         <img :src="spot.Picture.PictureUrl1" alt="景點圖片">
                     </a>
                     <div class="synopsis">
-                        <h5>{{spot[spotNameAttr].substr(0,9)}}</h5>
+                        <a class="clean_a" :href="spot.url">
+                            <h5>{{spot[spotNameAttr].substr(0,9)}}</h5>
+                        </a>
                         <div class="cityTag">{{spot.City}}</div>
                         <!-- <p v-if="spot.DescriptionDetail">{{spot.DescriptionDetail.substr(0,34)}}...</p> -->
                         <p v-if="spot.Description">{{spot.Description.substr(0,34)}}...</p>
-                        <div class="classList">
-                           <template v-for="(cs,key) of classList">
-                               <div class="classTag" v-if="spot[cs]">{{spot[cs]}}</div>
+                        <div class="spotTagList">
+                           <template v-for="(cs,key) of spot.tagList">
+                               <div class="classTag" >{{cs}}</div>
                            </template>
                         </div>
                     </div>

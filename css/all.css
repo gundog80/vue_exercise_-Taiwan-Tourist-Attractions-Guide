@@ -32,6 +32,9 @@ h3
 h4{
   border-left: .5em rgb(0, 217, 255) solid;
   border-style:solid;
+  font-weight: 600;
+  font-size:1.2rem;
+  padding-left: 0.5rem;
 }
 .fs-7{
   font-size: 0.8rem;
@@ -123,6 +126,12 @@ h4{
   white-space:nowrap;
   overflow:hidden;
   text-overflow: ellipsis;  
+}
+.form-floating>.form-control, .form-floating>.form-select {
+  height: calc(3.5rem + 6px);
+}
+.clean_a{
+  text-decoration: none;
 }
 /* .carousel-item{ */
   /* height: 20rem; */
