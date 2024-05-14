@@ -1,12 +1,12 @@
 const App=Vue.createApp({
     data(){
         return{
-            searchD:{},
+            searchD:{},//搜尋目標資料
             searchStatistical:{
                 total:0,
                 maxPage:0,
                 isEnd:false
-            },
+            },//搜尋結果小計
             mainData:[],
             classList:["Class","Class1","Class2","Class3"],
             typeList:["活動","景點","住宿","美食"],
@@ -73,6 +73,7 @@ const App=Vue.createApp({
         }
     },
     methods:{
+        //通用函數↓↓↓
         addClass(element, classToAdd){
             let currentClassValue = element.className;
             if (currentClassValue.indexOf(classToAdd) == -1){
@@ -96,11 +97,12 @@ const App=Vue.createApp({
                 }}
             element.className = filteredList.join(" ");
         },
+        //通用函數↑↑↑
         getUrlData(){
             let reObj={},
-            url = location.href,
-            temp;
-            console.log("url=",url);
+                url = location.href,
+                temp;
+            // console.log("url=",url);
             // url=url.split("#")[0];      // ??
             if(url.indexOf('?')!=-1){       //可重整 用字首轉大寫處理法(已處理 待測試) 另外先拆為k-v並移位
                 let urlData = url.split('?')[1].split('&'),
@@ -121,12 +123,14 @@ const App=Vue.createApp({
             }else{page=pgt.page};
             //https://tdx.transportdata.tw/api/basic/v2/Tourism/{{type}}/{{city}}
             // 'https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot/Taipei?%24filter=contains%28ScenicSpotName%2C%20%27%E6%B9%96%27%29&%24top=30&%24format=JSON'
+            //'https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot?%24top=30&%24format=JSON
+            
             let 
             pageQuantity=15,
             appHome="https://tdx.transportdata.tw/api/basic/v2/Tourism/",
             type=pgt.type,city=pgt.area,
             textFilter="?%24filter=contains%28"+type+"Name%2C%20%27"+pgt.searchText+"%27%29",
-            pageFilter="&%24top="+(pageQuantity+1)+"&%24skip="+(page-1)*pageQuantity,
+            pageFilter="&%24top="+(pageQuantity+0)+"&%24skip="+(page-1)*pageQuantity,
             dataType="&%24format=JSON";
             let pageTargetUrl=appHome+type+"/"+city+textFilter+pageFilter+dataType;
             console.log("type=",type)
@@ -225,7 +229,7 @@ const App=Vue.createApp({
     created(){
         this.searchD=this.getUrlData();
         //  ↓↓↓測試用暫關  
-        // this.mainSearch(this.searchD);
+        this.mainSearch(this.searchD);
         // ↑↑↑測試用暫關
             
     },
