@@ -34,7 +34,14 @@
 
         </div>
 
-
+        <template v-for="(item,key) of typeList">
+            <shopwindow_list_index v-bind:search_type="toEng(item)" show_mode="normal">
+                <!-- <search_serer :request="request"></search_serer>
+                <templast v-for>
+                    <card></card>
+                </templast> -->
+            </shopwindow_list_index>
+        </template>
         <div class="row justify-content-center">
             <div id="typeTagGroup" class="typeTagGroup col-5 d-flex justify-content-between">
                 <div class="typeTag col-auto" v-for="(tag,key) of typeList" :data-type=toEng[tag] v-on:click="changeType">{{tag}}</div>
