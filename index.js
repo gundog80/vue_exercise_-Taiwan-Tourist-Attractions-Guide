@@ -101,58 +101,12 @@ const App=Vue.createApp({
             console.log("serachUrl=",url)
             window.open(url);
         },
-        mainSearch(data){
-            let pageTargetUrl=this.getPageTargetUrl(data);
-            console.log(pageTargetUrl);
-            axios.get(pageTargetUrl).
-            then(response=>{
-                let data=response.data,pageQuantity=16;
-                let length=data.length;
-                // console.log()
-                console.log(this.searchD.page,this.searchStatistical.maxPage)
-                if(this.searchD.page>this.searchStatistical.maxPage){
-                    this.searchStatistical.total+=length;
-                    this.searchStatistical.maxPage=this.searchD.page
-                };
-                console.log(length,pageQuantity);
-                if(length<pageQuantity){
-                    this.searchStatistical.isEnd=true;
-                }else if(length=pageQuantity){
-                    data.shift();
-                    this.searchStatistical.total-=1;
-                };
-                console.log("resp=",data);
-                return data;
-            }).
-            then(response=>{
-                // console.log("spotList=",spotList);
-                // console.log("this.searchD=",this.searchD)
-                function editData(spotList,searchD){
-                    spotList.forEach(spot=>{
-                        // console.log("spot=",spot);
-                        if(!spot.City){spot.City=spot.Address.substr(0,3);
-                        // console.log("spotCity=",spot.City)
-                        };
-                        // console.log("this.searchD=",searchD)
-                        spot.url="./detail.html?kind="+searchD.type+"&id="+spot[searchD.type+'ID']
-                    });
-                    return spotList;
-                };
-                return editData(response,this.searchD);
-                
-            }).
-            then(response=>{
-                this.mainData=response;
-                
-            })
-        }
+
     },
     created(){
             
     },
     mounted(){
-        // this.strAction("#typeTagGroup","type",this.searchD.type);
-        this.setAction("#typeTagGroup","type",this.searchD.type);
     }
 })
 App.component('search_bar',{
@@ -180,15 +134,9 @@ App.component('search_bar',{
                 OPut[item.name]=item.value;
             });
             OPut.searchText=this.search_bar.searchText;
-            // console.log('子項資訊：');
-            // console.log(OPut);
             this.$emit('emit_e',OPut);
         },
 
-        // c_get_search(e){
-        //   console.log("事件: "+e);
-        //   this.$emit('emit_e',Oput);
-        // }
     },
     template:`
     <form class="d-flex sharebar col-9 mx-auto justify-content-center align-items-stretch ">
@@ -279,67 +227,100 @@ App.component('search_bar',{
 //         })
 //     },
 // })
-App.component('search_server',{
-    //搜尋用
-    props:['searchPackage'],
-    data(){return{
-        type:searchPackage.data.type,
-        city:searchPackage.data.city,
-        topp:searchPackage.data.data,
-        select1:searchPackage.data.select1,
-        url:"",  
-    }},
-    method:{
-        getUrl(){
-            // https://ptx.transportdata.tw/MOTC/v2/Tourism/Hotel?%24filter=HotelID%20eq%20'C4_315080000H_000818'&%24top=30&%24format=JSON
-            let temp1="https://ptx.transportdata.tw/MOTC/v2/Tourism/";
-            this.url+=temp1+=this.type;
-            let temp2="";
-            // ………
-        },
-        // axios.get
-    }
-});
+
+// App.component('search_server',{
+//     //搜尋用
+//     props:['searchPackage'],
+//     data(){return{
+//         type:searchPackage.data.type,
+//         city:searchPackage.data.city,
+//         topp:searchPackage.data.data,
+//         select1:searchPackage.data.select1,
+//         url:"",  
+//     }},
+//     method:{
+//         getUrl(){
+//             // https://ptx.transportdata.tw/MOTC/v2/Tourism/Hotel?%24filter=HotelID%20eq%20'C4_315080000H_000818'&%24top=30&%24format=JSON
+//             let temp1="https://ptx.transportdata.tw/MOTC/v2/Tourism/";
+//             this.url+=temp1+=this.type;
+//             let temp2="";
+//             // ………
+//         },
+//         // axios.get
+//     }
+// });
+
 App.component('shopwindow_list_index',{
     //產生搜索文字 && 渲染搜索成果
-    props:["searchType","showMod","showData"],
+    props:["search_type","show_mod","show_data"],
     //$emit- searchPackage
     data(){return{
-        spotList:[],
+        showData:[],
         response:[],
         request:{},
-        cityList:["Taipei","NewTaipei","Taoyuan","Taichung","Tainan","Kaohsiung","Keelung","Hsinchu","HsinchuCounty","MiaoliCounty","ChanghuaCounty","NantouCounty","YunlinCounty","ChiayiCounty","Chiayi","PingtungCounty","YilanCounty","HualienCounty","TaitungCounty","KinmenCounty","PenghuCounty","LienchiangCounty"]
-,
+        cityList:["Taipei","NewTaipei","Taoyuan","Taichung","Tainan","Kaohsiung","Keelung","Hsinchu","HsinchuCounty","MiaoliCounty","ChanghuaCounty","NantouCounty","YunlinCounty","ChiayiCounty","Chiayi","PingtungCounty","YilanCounty","HualienCounty","TaitungCounty","KinmenCounty","PenghuCounty","LienchiangCounty"],
+        searchPackage:{data:{},head:{}},
     }},
     methods:{
         creatSearchPackage(){
             let cityth=Math.floor(Math.random()*this.cityList.length);
-            this.searchPackage.city=this.cityList(cityth);
-            this.searchPackage.head=searchType;
-            this.searchPackage.data.type=searchType;
+            // console.log(this.cityList[cityth]);
+            // console.log(this.search_type);
+            this.searchPackage.data.city=this.cityList[cityth];
+            this.searchPackage.head=this.search_type;
+            this.searchPackage.data.type=this.search_type;
             let select1="";
-            switch (searchType){
+            switch (this.search_type){
                 case "Activity":
-                    select1="$select=ActivityID,ActivityName,Class1,Class2,Class3,City,Picture";
+                    select1="select=ActivityID,ActivityName,Class1,Class2,City,Picture";
                     break;
                 case "Hotel":
-                    select1="$select=HotelID,HotelName,Class,City,Picture";
+                    select1="select=HotelID,HotelName,Class,City,Picture";
                     break;
                 case "Restaurant":
                     // select1=""
-                    select1="$select=RestaurantID,RestaurantName,City,Picture";
+                    select1="select=RestaurantID,RestaurantName,City,Picture";
                     break;
                 case "ScenicSpot":
                     // select1=""
-                    select1="$select=ScenicSpotID,ScenicSpotName,Class1,Class2,Class3,City,Picture";
+                    select1="select=ScenicSpotID,ScenicSpotName,Class1,Class2,Class3,City,Picture";
                     break;
                 default:
                     console.log("搜尋類型錯誤")
                     break;
             }
-            this.searchPackage.data.select1=this.select1;
+            this.searchPackage.data.select1=select1;
             this.searchPackage.data.topp=25;
-            this.$emit('getSearchPackage',this.searchPackage)
+            let appHome="https://tdx.transportdata.tw/api/basic/v2/Tourism/";
+            console.log(appHome);
+// https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot/Taoyuan?%24select=Picture&%24top=10&%24format=JSON
+            let searchUrl=appHome + this.searchPackage.data.type + "/" + this.searchPackage.data.city + "?%24" + select1 + "&%24top=" + this.searchPackage.data.topp + "&%24format=JSON";
+            console.log("searchUrl=",searchUrl);
+            // return this.searchPackage;
+ 
+            //測試時關閉↓↓↓↓   
+            axios.get("searchUrl").
+            then(response=>{
+                // console.log("resp=",response.data);
+                return response.data;
+            }).
+            then(data_25=>{
+                //陣列 array.length pop() Math.random() Math.floor()
+                let data_5=[];
+                if (data_25.length>5){
+                    for(i=0;i<5;i++){
+                        let key=Math.floor(Math.random()*data_25.length);
+                        data_5.push(data_25[key]);
+                        data_25[key]=data_25.pop();
+                    };
+                }else{data_5=data_25}
+                return data_5
+            }).
+            then(data=>{
+                this.showData=data  ;
+                console.log(data)      
+            })
+            //測試時關閉↑↑↑↑
         },
         
     },
@@ -349,21 +330,25 @@ App.component('shopwindow_list_index',{
     },
     mounted(){},
     template:`
-        <div>this is whopwindow,searchType is {{search_type}},and showMod is {{show_mod}}}}</div>
+        <div>this is shopwindow,searchType is {{search_type}},and showMod is {{show_mod}}}}</div>
+        <card :card_data="i"></card>
         <search_serer :request="request"></search_serer>
         <templast v-for=(i,k) of showData>
             <card :card_data="i"></card>
         </templast>
 
     `,
-    component:{ }
-})
-// App.shopwindow_list_index.component('card',{
-//     props:['cardData'],
-//     data(){return{
+    components:{
+        'card':{
+            props:['cardData'],
+            data(){return{
+        
+            }},
+            template:`<div>我是card</div>`,
+        }
 
-//     }},
-//     template:``,
-// })
+     }
+})
+
 
 App.mount('#App');
