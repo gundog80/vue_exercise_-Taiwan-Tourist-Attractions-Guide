@@ -349,14 +349,21 @@ App.component('shopwindow_list_index',{
     },
     mounted(){},
     template:`
-        <div>this is whopwindow,searchType is {{search_type}},and showMod is {{show_mod}}}}</div>
+        <div>this is shopwindow,searchType is {{search_type}},and showMod is {{show_mod}}}}</div>
         <search_serer :request="request"></search_serer>
         <templast v-for=(i,k) of showData>
             <card :card_data="i"></card>
         </templast>
 
     `,
-    component:{ }
+    components:{'card':{
+        props:[],
+        data(){
+            return{
+                
+        }},
+        template:`這裡是CARD`,
+    } }
 })
 // App.shopwindow_list_index.component('card',{
 //     props:['cardData'],

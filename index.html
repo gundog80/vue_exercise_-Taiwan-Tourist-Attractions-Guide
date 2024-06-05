@@ -24,27 +24,29 @@
         background: url("https://www.eastcoast-nsa.gov.tw/image/426/640x480") no-repeat center;
         background-size: cover;
     }
+    .w-100{
+        width:100%;
+    }
 </style>
 <body><div id="App">
     <header class="container header text-center">
         <div class="index_banner">
             <div class="d-flex "> <div class="col-3 logo justify-content-start">THE <i class="twicon-main-island"></i> </div></div>
-            <div class="col-3 logo">此版本已過期 </div>
+            <div class="col-3 logo">台灣旅遊網</div>
             <search_bar class="col-8"
             @emit_e="get_search" :search-data="area" :eng-to-ch="toCh"></search_bar>
 
         </div>
 
-        <template v-for="(item,key) of typeList">
+        <div v-for="(item,key) of typeList" class="container">
             {{item}}
             <shopwindow_list_index :search_type=toEng[item] show_mode="normal">
-                <search_serer :request="request"></search_serer>
-                <card></card>
-                <!-- <templast v-for>
+                <!-- <search_serer :request="request"></search_serer> -->
+                <!-- <templast v-for="(i,k) of show_Data">
                     <card></card>
                 </templast> -->
             </shopwindow_list_index>
-        </template>
+        </div>
         <!-- <div class="row justify-content-center">
             <div id="typeTagGroup" class="typeTagGroup col-5 d-flex justify-content-between">
                 <div class="typeTag col-auto" v-for="(tag,key) of typeList" :data-type=toEng[tag] v-on:click="changeType">{{tag}}</div>

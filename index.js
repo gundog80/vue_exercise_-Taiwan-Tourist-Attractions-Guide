@@ -255,11 +255,18 @@ App.component('shopwindow_list_index',{
     props:["search_type","show_mod","show_data"],
     //$emit- searchPackage
     data(){return{
-        showData:[],
         response:[],
         request:{},
         cityList:["Taipei","NewTaipei","Taoyuan","Taichung","Tainan","Kaohsiung","Keelung","Hsinchu","HsinchuCounty","MiaoliCounty","ChanghuaCounty","NantouCounty","YunlinCounty","ChiayiCounty","Chiayi","PingtungCounty","YilanCounty","HualienCounty","TaitungCounty","KinmenCounty","PenghuCounty","LienchiangCounty"],
         searchPackage:{data:{},head:{}},
+        //測試暫用↓↓↓↓↓↓
+        showData:[
+            {"ActivityID":"C2_376470000A_000397","ActivityName":"轉知彰化縣彰化市公所公告「半線古城踩街國際嘉年華會－2024創意提燈踩街暨 服裝造型競賽」活動","StartTime":"2023-12-15T00:00:00+08:00","EndTime":"2024-01-15T00:00:00+08:00","Picture":{"PictureUrl1":"https://tourism.chcg.gov.tw/upload/12/2023122013352340341.jpg","PictureDescription1":"半線古城踩街國際嘉年華會～2024創意提燈踩街暨服裝造型競賽"},"City":"彰化縣","SrcUpdateTime":"2024-05-19T01:37:45+08:00","UpdateTime":"2024-05-19T02:18:55+08:00"},
+            {"ScenicSpotID":"C1_387000000A_000001","ScenicSpotName":"Top City臺中大遠百","Picture":{"PictureUrl1":"https://travel.taichung.gov.tw/content/images/attractions/537/640x480_Filedata635173618561220703.jpg","PictureDescription1":"Top City臺中大遠百"},"Class1":"其他","City":"臺中市","SrcUpdateTime":"2024-05-19T01:34:21+08:00","UpdateTime":"2024-05-19T02:18:55+08:00"},
+            {"HotelID":"C4_A15010000H_000328","HotelName":"南方太陽旅店-北館民宿","Picture":{"PictureUrl1":"https://taiwan.taiwanstay.net.tw/twpic/34189.jpg","PictureDescription1":"房間1","PictureUrl2":"https://taiwan.taiwanstay.net.tw/twpic/27197.jpg","PictureDescription2":"外觀","PictureUrl3":"https://taiwan.taiwanstay.net.tw/twpic/18120.jpg","PictureDescription3":"房間3"},"Class":"民宿","City":"屏東縣","SrcUpdateTime":"2024-05-19T01:41:44+08:00","UpdateTime":"2024-05-19T02:18:55+08:00"},
+            {"RestaurantID":"C3_376490000A_000159","RestaurantName":"洪董魯味","Picture":{"PictureUrl1":"https://tour.yunlin.gov.tw/public/upload/old/20180713015635.png","PictureDescription1":"店外觀"},"City":"雲林縣","SrcUpdateTime":"2024-05-20T01:41:16+08:00","UpdateTime":"2024-05-20T02:48:55+08:00"},
+        ],
+        //測試暫用↑↑↑↑↑↑
     }},
     methods:{
         creatSearchPackage(){
@@ -299,27 +306,27 @@ App.component('shopwindow_list_index',{
             // return this.searchPackage;
  
             //測試時關閉↓↓↓↓   
-            axios.get("searchUrl").
-            then(response=>{
-                // console.log("resp=",response.data);
-                return response.data;
-            }).
-            then(data_25=>{
-                //陣列 array.length pop() Math.random() Math.floor()
-                let data_5=[];
-                if (data_25.length>5){
-                    for(i=0;i<5;i++){
-                        let key=Math.floor(Math.random()*data_25.length);
-                        data_5.push(data_25[key]);
-                        data_25[key]=data_25.pop();
-                    };
-                }else{data_5=data_25}
-                return data_5
-            }).
-            then(data=>{
-                this.showData=data  ;
-                console.log(data)      
-            })
+            // axios.get("searchUrl").
+            // then(response=>{
+            //     // console.log("resp=",response.data);
+            //     return response.data;
+            // }).
+            // then(data_25=>{
+            //     //陣列 array.length pop() Math.random() Math.floor()
+            //     let data_5=[];
+            //     if (data_25.length>5){
+            //         for(i=0;i<5;i++){
+            //             let key=Math.floor(Math.random()*data_25.length);
+            //             data_5.push(data_25[key]);
+            //             data_25[key]=data_25.pop();
+            //         };
+            //     }else{data_5=data_25}
+            //     return data_5
+            // }).
+            // then(data=>{
+            //     this.showData=data  ;
+            //     console.log(data)      
+            // })
             //測試時關閉↑↑↑↑
         },
         
@@ -330,21 +337,97 @@ App.component('shopwindow_list_index',{
     },
     mounted(){},
     template:`
-        <div>this is shopwindow,searchType is {{search_type}},and showMod is {{show_mod}}}}</div>
-        <card :card_data="i"></card>
-        <search_serer :request="request"></search_serer>
-        <templast v-for=(i,k) of showData>
-            <card :card_data="i"></card>
-        </templast>
+        <template v-for="(i,k) of showData">
+            <card :card_data=i :test_numb=k></card>
+        </template>
 
     `,
     components:{
         'card':{
-            props:['cardData'],
+            props:['card_data','test_numb'],
             data(){return{
         
             }},
-            template:`<div>我是card</div>`,
+            template:`
+                <div class="col-3" >
+                    <a :href="card_data.url">
+                        <img style="width:100%" :src="card_data.Picture.PictureUrl1" alt="景點圖片">
+                    </a>
+                    <div class="synopsis">
+                        <h5 v-if="card_data[spotNameAttr]">{{card_data[spotNameAttr].substr(0,9)}}</h5>
+                        <div class="cityTag">{{card_data.City}}</div>
+                        <!-- <p v-if="card_data.DescriptionDetail">{{card_data.DescriptionDetail.substr(0,34)}}...</p> -->
+                        <p v-if="card_data.Description">{{card_data.Description.substr(0,34)}}...</p>
+                        <div class="classList">
+                           <template v-if="classList" v-for="(cs,key) of classList">
+                               <div class="classTag" v-if="card_data[cs]">{{card_data[cs]}}</div>
+                           </template>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            
+
+            // <a class="cardImg col-4" href="">
+            //     <div class="square_img">
+            //         <img class="w-100" :src="card_data.Picture.PictureUrl1">
+            // </div></a>
+            // <div class="col-8">
+            //     <h6 sytle="white-space:nowrap"class="oh"> {{card_data.ScenicSpotName}}
+            //                             {{card_data.HotelName}}
+            //                             {{card_data.RestaurantName}}
+            //                             {{card_data.ActivityName}}</h3>
+            //     <div>
+            //         <span class="area fw-bolder text-info"><i class="bi bi-geo-alt  m-2  d-inline-block"></i> {{card_data.City}}</span>
+            //     </div>
+            // </div>
+
+
+            // <aside_AD_card class="d-flex my-1">
+            //                 <a class="adImg col-4" :href="item2.chick_url"  target="_blank">
+            //                     <div class="square_img">
+            //                         <img styel="" :src=item2.Picture.PictureUrl1 alt="" >
+            //                     </div>
+            //                 </a>
+            //                 <div class="col-8">
+            //                     <h6 sytle="white-space:nowrap"class="oh"> {{item2.ScenicSpotName}}
+            //                             {{item2.HotelName}}
+            //                             {{item2.RestaurantName}}
+            //                             {{item2.ActivityName}}</h3>
+            //                     <div>
+            //                         <span class="area fw-bolder text-info"><i class="bi bi-geo-alt  m-2  d-inline-block"></i> {{spot_data.City}}</span>
+            //                     </div>
+            //                     <span class="mx-2" v-if="spot_data.Class1 + spot_data.Class">{{item2.Class1}}{{item2.Class}}</span>
+            //                     <span class="mx-2" v-if="spot_data.Class2">{{item2.Class2}}</span>
+            //                     <span class="mx-2" v-if="spot_data.Class3">{{item2.Class3}}</span>
+            //                 </div>
+            //             </aside_AD_card>
+
+
+            // <li class="searchResultCard col-3"
+            //     v-for="(spot,key) of mainData">
+            //         <a :href="spot.url">
+            //             <img :src="spot.Picture.PictureUrl1" alt="景點圖片">
+            //         </a>
+            //         <div class="synopsis">
+            //             <h5>{{spot[spotNameAttr].substr(0,9)}}</h5>
+            //             <div class="cityTag">{{spot.City}}</div>
+            //             <!-- <p v-if="spot.DescriptionDetail">{{spot.DescriptionDetail.substr(0,34)}}...</p> -->
+            //             <p v-if="spot.Description">{{spot.Description.substr(0,34)}}...</p>
+            //             <div class="classList">
+            //                <template v-for="(cs,key) of classList">
+            //                    <div class="classTag" v-if="spot[cs]">{{spot[cs]}}</div>
+            //                </template>
+            //             </div>
+            //         </div>
+            //     </li>
+
+            mounted(){
+                console.log(card_data)
+            },
+
+            
         }
 
      }
