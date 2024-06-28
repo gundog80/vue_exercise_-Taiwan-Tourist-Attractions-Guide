@@ -1,0 +1,18 @@
+Client Id
+gundog80-b72caff9-ab71-4798
+Client Secret
+b47caaf9-d4bb-40bc-b5cc-3814d333d0db
+
+client:"&%24client_id=gundog80-b72caff9-ab71-4798&%24client_secret=b47caaf9-d4bb-40bc-b5cc-3814d333d0db",
+
+
+https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot/Taipei?%24top=30&%24format=
+
+https://ptx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot?%24filter=ScenicSpotID%20eq%20%27C1_376450000A_000020%27&%24top=30&%24format=JSON
+
+https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot?%24filter=ScenicSpotID%20eq%20%27C1_371030000A_000046%27&%24top=50&%24format=JSON
+
+https://ptx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot/Taipei?%24top=30&%24format=JSON
+
+
+https://ptx.transportdata.tw/MOTC/v2/Tourism/Hotel?%24filter=HotelID%20eq%20%27C4_A15010000H_000260%27&%24top=30&%24format=JSON

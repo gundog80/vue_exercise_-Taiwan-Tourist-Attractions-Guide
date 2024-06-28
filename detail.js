@@ -153,7 +153,7 @@ const App=Vue.createApp({
             //         console.log('searchType error');
             //         break;
             // };
-            // let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/Kaohsiung?%24top=30&%24format=JSON";
+            // let baseTarget="https://tdx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/Kaohsiung?%24top=30&%24format=JSON";
             // console.log('url=' + url);
 
 
@@ -167,7 +167,7 @@ const App=Vue.createApp({
                     屏東縣:"PingtungCounty",宜蘭縣:"YilanCounty",花蓮縣:"HualienCounty",台東縣:"TaitungCounty",金門縣:"KinmenCounty",
                     澎湖縣:"PenghuCounty",連江縣:"LienchiangCounty",
                 };
-                let baseTarget="https://ptx.transportdata.tw/MOTC/v2/Tourism/",
+                let baseTarget="https://tdx.transportdata.tw/api/basic/v2/Tourism/",
                     subTarget="?%24format=JSON",
                     // subTarget="?%24top=30&%24format=JSON",
                     serachType="",city="";
@@ -246,23 +246,24 @@ const App=Vue.createApp({
         get_pageTarget_url(){       
             let data=this.get_pageTarget_data();
             console.log(data);
-            // let temp1="https://ptx.transportdata.tw/MOTC/v2/Tourism/Restaurant?%24top=2&%24format=JSON";
-            let temp1="https://ptx.transportdata.tw/MOTC/v2/Tourism/";
+            // let temp1="https://tdx.transportdata.tw/MOTC/v2/Tourism/Restaurant?%24top=2&%24format=JSON";
+            let temp1="https://tdx.transportdata.tw/api/basic/v2/Tourism/";
             //Restaurant?%24top=2&%24format=JSON";
             let kind=data[0],
                 idName=data[1],
                 id=data[2],
             temp2='?%24filter='+idName+"%20eq%20'"+id+"'";
-            temp3="&%24top=30&%24format=JSON";
+            temp3="&%24client_id=gundog80-b72caff9-ab71-4798&%24client_secret=b47caaf9-d4bb-40bc-b5cc-3814d333d0db";
+            temp4="&%24top=1&%24format=JSON";
             // let temp3='filter='+idName+"%20eq%20'"+id+"'";
-            url=temp1+kind+temp2+temp3;
+            url=temp1+kind+temp2+temp3+temp4;
             // console.log(url);
             return url;
             // this.target_url=temp1+target_kind+temp2+targetID
         },
         ad_search_url(positionData,kind=this.detail_type,filter,page=0,number=5,radius=10000){
             console.log("hi near_serch_url",page,number,positionData);
-            let temp1="https://ptx.transportdata.tw/MOTC/v2/Tourism/";
+            let temp1="https://tdx.transportdata.tw/api/basic/v2/Tourism/";
             // 可能要換成
             // https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot
             // let kind=this.detail_type;
@@ -290,7 +291,8 @@ const App=Vue.createApp({
                     console.log("搜尋類型錯誤")
                     break;
             }
-            let temp2='?'+ select1 + '&%24'+'spatialFilter=' + spatialFilter + '&%24' +filter2+  '&%24' + 'top=' + topp + '&%24' + 'skip='+ skip + "&%24format=JSON&%24";
+            let client="&%24client_id=gundog80-b72caff9-ab71-4798&%24client_secret=b47caaf9-d4bb-40bc-b5cc-3814d333d0db";
+            let temp2='?'+ select1 + '&%24'+'spatialFilter=' + spatialFilter + '&%24' +filter2+  '&%24' + 'top=' + topp + '&%24' + 'skip='+ skip + client +"&%24format=JSON&%24";
             let url=temp1+kind+temp2;
             console.log('url='+url);
             return url;

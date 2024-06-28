@@ -1,0 +1,68 @@
+.indexCard{
+    width: 255px;
+    height: 345px; 
+    margin-bottom:40px;   
+    display:inline-block;
+}
+.indexCard img{
+    width:100%;
+    /* height:152px; */
+    aspect-ratio: 3/2;
+}
+.indexCard>.synopsis{
+    height:193px;
+    padding: 12px;
+}
+.indexCard h5{
+    font-family: 'PingFang TC';
+    font-weight: 600;
+    line-height: 28px;
+    font-size: 20px;
+}
+.indexCard .cityTag{
+    color:aqua;
+    font-size:16px;
+    
+}
+.indexCard p{
+    min-height:68px;
+    font-family: 'PingFang TC';
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22.4px;
+}
+.indexCard .classList{
+    margin:16px 0 ;
+}
+.indexCard .classTag{
+    padding:4px 8px 4px 8px;
+    font-family: 'PingFang TC';
+    font-weight: 400;
+    font-size: 12px;
+    display:inline-block;
+}
+.typeTag{
+    font-size:1.6rem;
+    line-height: 3.5rem;
+    font-weight: 1000;
+    color:rgb(145, 145, 145);
+}
+.typeTag:hover{
+    color:aqua;
+}
+#typeTagGroup .action{
+    color:black
+} 
+.banner{
+    position:static;
+    /* height:6rem; */
+    overflow:hidden
+}
+.banner-box{
+    padding-bottom: 10%;
+    padding-top:10%;
+    overflow-y:hidden;
+  }
+.banner img{
+    width:100%;
+}

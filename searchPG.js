@@ -69,6 +69,7 @@ const App=Vue.createApp({
                 LienchiangCounty:"連江縣",
             },
             spotNameAttr:"",
+            client:"&%24client_id=gundog80-b72caff9-ab71-4798&%24client_secret=b47caaf9-d4bb-40bc-b5cc-3814d333d0db",
 
         }
     },
@@ -309,6 +310,8 @@ App.component('page_banner',{
     data(){return{
         bannerSearch:"",
         bannerUrl:"",
+        client:"&%24client_id=gundog80-b72caff9-ab71-4798&%24client_secret=b47caaf9-d4bb-40bc-b5cc-3814d333d0db",
+
     }},
     methods:{
         // Math.floor((Math.random()*10)+1);
@@ -321,7 +324,7 @@ App.component('page_banner',{
             // textFilter="?%24filter=contains%28"+type+"Name%2C%20%27"+pgt.searchText+"%27%29",
             // pageFilter="&%24top="+pageQuantity+"&%24skip="+page*pageQuantity,
             dataType="&%24format=JSON";
-            bannerSearchUrl=appHome+type+"/"+city+selectPic+dataType;
+            bannerSearchUrl=appHome+type+"/"+city+selectPic+this.client+dataType;
             
             this.bannerUrl=bannerSearchUrl; //測試用 需刪
             // console.log("type=",type)
@@ -379,6 +382,8 @@ App.component('banner',{
         return{
             area:"",
             bannerUrl:"1",
+            client:"&%24client_id=gundog80-b72caff9-ab71-4798&%24client_secret=b47caaf9-d4bb-40bc-b5cc-3814d333d0db",
+
         }
     },
     methods:{
@@ -399,7 +404,7 @@ App.component('banner',{
             // textFilter="?%24filter=contains%28"+type+"Name%2C%20%27"+pgt.searchText+"%27%29",
             // pageFilter="&%24top="+pageQuantity+"&%24slip="+page*pageQuantity,
             dataType="&%24format=JSON";
-            let banSearchUrl=appHome+type+"/"+city+"?"+select+top10+dataType;
+            let banSearchUrl=appHome+type+"/"+city+"?"+select+top10+this.client+dataType;
             // console.log("type=",type)
             // console.log("city=",city)
             console.log("banUrlSearch=",banSearchUrl);

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/all.css">
     <link rel="stylesheet" href="./css/searchPG.css">
+    <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./img/twicon/twicon.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin=""/> 
@@ -39,8 +40,8 @@
         </div>
 
         <div v-for="(item,key) of typeList" class="container">
-            {{item}}
-            <shopwindow_list_index :search_type=toEng[item] show_mode="normal">
+            <h3>{{item}}</h3>
+            <shopwindow_list_index :search_type=toEng[item] :type_key=key show_mode="normal">
                 <!-- <search_serer :request="request"></search_serer> -->
                 <!-- <templast v-for="(i,k) of show_Data">
                     <card></card>
