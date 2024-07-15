@@ -301,41 +301,55 @@ App.component('shopwindow_list_index',{
             this.searchPackage.data.select1=select1;
             this.searchPackage.data.topp=25;''
             let appHome="https://tdx.transportdata.tw/api/basic/v2/Tourism/";
+            // let client="&%24client_id=gundog80-b72caff9-ab71-4798&%24client_secret=b47caaf9-d4bb-40bc-b5cc-3814d333d0db";
+            let client=[
+                "&%24client_id=gundog80-b72caff9-ab71-4798&%24client_secret=b47caaf9-d4bb-40bc-b5cc-3814d333d0db",
+                "&%24client_id=gundog80-00a9b4ad-f760-466a&%24client_secret=d51384a1-5aa2-4a82-88c7-cfbf3e33da2b",
+                "&%24client_id=gundog80-02637cda-655a-4f91&%24client_secret=d8a8018c-5baa-4adc-a64d-ed4cecdcb5ee",
+                "&%24client_id=gundog80-b72caff9-ab71-4798&%24client_secret=b47caaf9-d4bb-40bc-b5cc-3814d333d0db"
+            ]
             console.log(appHome);
 // https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot/Taoyuan?%24select=Picture&%24top=10&%24format=JSON
-            let searchUrl=appHome + this.searchPackage.data.type + "/" + this.searchPackage.data.city + "?%24" + select1 + "&%24top=" + this.searchPackage.data.topp + "&%24format=JSON";
+            let searchUrl=appHome + this.searchPackage.data.type + "/" + this.searchPackage.data.city + "?%24" + select1 + "&%24top=" + this.searchPackage.data.topp + client[this.type_key] +"&%24format=JSON";
             console.log("searchUrl=",searchUrl);
             // return this.searchPackage;
  
             //測試時關閉↓↓↓↓   
-            // axios.get("searchUrl").
-            // then(response=>{
-            //     // console.log("resp=",response.data);
-            //     return response.data;
-            // }).
-            // then(data_25=>{
-            //     //陣列 array.length pop() Math.random() Math.floor()
-            //     let data_5=[];
-            //     if (data_25.length>5){
-            //         for(i=0;i<5;i++){
-            //             let key=Math.floor(Math.random()*data_25.length);
-            //             data_5.push(data_25[key]);
-            //             data_25[key]=data_25.pop();
-            //         };
-            //     }else{data_5=data_25}
-            //     return data_5
-            // }).
-            // then(data=>{
-            //     this.showData=data  ;
-            //     console.log(data)      
-            // })
+            // console.log(searchUrl)
+            setTimeout(() => {
+                axios.get(searchUrl).
+                then(response=>{
+                    // console.log("resp=",response.data);
+                    return response.data;
+                }).
+                then(data_25=>{
+                    //陣列 array.length pop() Math.random() Math.floor()
+                    let data_5=[];
+                    if (data_25.length>5){
+                        for(i=0;i<5;i++){
+                            let key=Math.floor(Math.random()*data_25.length);
+                            data_5.push(data_25[key]);
+                            data_25[key]=data_25.pop();
+                        };
+                    }else{data_5=data_25}
+                    return data_5
+                }).
+                then(data=>{
+                    // this.showData=data  ;
+                    console.log("data="+data+data[0]);      
+                    console.log("old_showData="+this.showData);      
+                    this.showData=this.showData.concat(data)  ;
+                    console.log("showData="+this.showData)      
+                })
+                
+            }, this.type_key*10000);
             //測試時關閉↑↑↑↑
         },
         
     },
     created(){
         this.creatSearchPackage()
-        this.showData=this.showData0.filter(e=>{if(e[this.typeNameAttr["type_key"]]){1};});
+        this.showData=this.showData0.filter(e=>{if(e[this.typeNameAttr[this.ype_key]]){1};});
     },
     mounted(){},
     template:`

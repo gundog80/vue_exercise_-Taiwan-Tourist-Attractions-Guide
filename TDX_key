@@ -5,6 +5,25 @@ b47caaf9-d4bb-40bc-b5cc-3814d333d0db
 
 client:"&%24client_id=gundog80-b72caff9-ab71-4798&%24client_secret=b47caaf9-d4bb-40bc-b5cc-3814d333d0db",
 
+-----
+Client Id
+gundog80-00a9b4ad-f760-466a
+Client Secret
+d51384a1-5aa2-4a82-88c7-cfbf3e33da2b
+
+client:"&%24client_id=gundog80-00a9b4ad-f760-466a&%24client_secret=d51384a1-5aa2-4a82-88c7-cfbf3e33da2b",
+-----
+
+Client Id
+gundog80-02637cda-655a-4f91
+Client Secret
+d8a8018c-5baa-4adc-a64d-ed4cecdcb5ee
+
+client:"&%24client_id=gundog80-02637cda-655a-4f91&%24client_secret=d8a8018c-5baa-4adc-a64d-ed4cecdcb5ee",
+-----
+
+
+
 
 https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot/Taipei?%24top=30&%24format=
 
